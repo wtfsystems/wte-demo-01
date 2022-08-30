@@ -51,6 +51,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         mgr::messages::add(message("system", "new-game", "game.sdf"));
     });
 
+    /*
     add_handler<WTE_GAME_HANDLES, WTE_EVENT_KEY_DOWN, handler::key>([](const int& key, ALLEGRO_DISPLAY* display) {
         if(key == config::controls::p1_key_up) {
             entity_id player_id = mgr::world::get_id("player");
@@ -168,6 +169,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             mgr::audio::sample::stop("shield_sound");
         }
     });
+    */
 }
 
 /*
