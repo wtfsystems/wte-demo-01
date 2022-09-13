@@ -45,9 +45,9 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     /*
      * Set up input handling - WIP
      */
-    //add_handler<WTE_NONGAME_HANDLES, WTE_EVENT_KEY_DOWN, handler::key>([](const int& key, ALLEGRO_DISPLAY* display) {
-        //wte::mgr::messages::add(message("system", "new-game", "game.sdf"));
-    //});
+    wte::add_handler<wte::WTE_NONGAME_HANDLES, wte::WTE_EVENT_KEY_DOWN, wte::handler::key>([](const int& key, ALLEGRO_DISPLAY* display) {
+        wte::mgr::messages::add(wte::message("system", "new-game", "game.sdf"));
+    });
 
     /*
     add_handler<WTE_GAME_HANDLES, WTE_EVENT_KEY_DOWN, handler::key>([](const int& key, ALLEGRO_DISPLAY* display) {
