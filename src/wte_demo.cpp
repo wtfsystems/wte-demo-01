@@ -43,7 +43,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     wte::mgr::variables::load<int>("hiscore");
 
     /*
-     * Set up input handling - WIP
+     * Set up input handling
      */
     wte::add_handler<wte::NONGAME_HANDLES, wte::EVENT_KEY_DOWN, wte::handler::key>([](const int& key, ALLEGRO_DISPLAY* display) {
         wte::mgr::messages::add(wte::message("system", "new-game", "game.sdf"));
