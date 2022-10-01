@@ -17,13 +17,6 @@
 #include <wte_demo.hpp>
 #include <my_components.hpp>
 
-namespace layer {
-    const std::size_t background = 0;
-    const std::size_t enemy = 1;
-    const std::size_t player = 2;
-    const std::size_t overlay = 0;
-}
-
 /*
  * Game's constructor.
  * Initialize game specific variables here.

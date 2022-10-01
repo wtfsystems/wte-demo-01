@@ -13,6 +13,19 @@
 
 #include <wtengine/wtengine.hpp>
 
+namespace layer {
+    inline const std::size_t background = 0;
+    inline const std::size_t enemy = 1;
+    inline const std::size_t player = 2;
+    inline const std::size_t overlay = 0;
+}
+
+namespace player_pols {
+    inline static float x = 0.0f;
+    inline static float y = 0.0f;
+    inline static void reset(void) { x = y = 0.0f; };
+}
+
 class wte_demo final : public wte::engine {
     public:
         wte_demo(int argc, char **argv);
@@ -29,12 +42,6 @@ class wte_demo final : public wte::engine {
         void on_menu_open(void) override;
         //  On menu close
         void on_menu_close(void) override;
-
-        struct player_pols {
-            inline static float x = 0.0f;
-            inline static float y = 0.0f;
-            inline static void reset(void) { x = y = 0.0f; };
-        };
 };
 
 #endif
