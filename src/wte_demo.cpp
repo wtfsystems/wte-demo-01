@@ -33,6 +33,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     al_init_primitives_addon();
     al_init_acodec_addon();
 
+    //  Create engine variables for the game
     wte::mgr::variables::reg<int>("score", 0);
     wte::mgr::variables::reg<int>("hiscore", 0);
     wte::mgr::variables::reg<int>("max_lives", 3);
