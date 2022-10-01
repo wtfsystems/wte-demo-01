@@ -49,7 +49,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         wte::mgr::messages::add(wte::message("system", "new-game", "game.sdf"));
     });
 
-    /*add_handler<GAME_HANDLES, EVENT_KEY_DOWN, handler::key>([](const int& key, ALLEGRO_DISPLAY* display) {
+    wte::add_handler<wte::GAME_HANDLES, wte::EVENT_KEY_DOWN, wte::handler::key>([](const int& key, ALLEGRO_DISPLAY* display) {
         if(key == config::controls::p1_key_up) {
             wte::entity_id player_id = wte::mgr::world::get_id("player");
             const float rad = std::atan2(player_pols::y, player_pols::x);
@@ -93,7 +93,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             wte::mgr::world::set_component<wte::cmp::ai>(can_id)->enabled = true;
             wte::mgr::world::set_component<wte::cmp::hitbox>(can_id)->solid = true;
             //  Play sound effect.
-            wte::mgr::audio::sample::play(wte::mgr::assets<al_sample>::get<al_sample>("laser"), "cannon_fire");
+            wte::mgr::audio::sample::play(wte::mgr::assets<wte::al_sample>::get<wte::al_sample>("laser"), "cannon_fire");
         }
         if(key == config::controls::p1_key_action2) {
             wte::entity_id player_id = wte::mgr::world::get_id("player");
@@ -111,12 +111,12 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 wte::mgr::world::set_component<wte::cmp::hitbox>(shd_id)->solid = true;
                 wte::mgr::world::set_component<wte::cmp::hitbox>(player_id)->solid = false;
                 //  Play sound effect.
-                wte::mgr::audio::sample::play(wte::mgr::assets<al_sample>::get<al_sample>("shield"), "shield_sound");
+                wte::mgr::audio::sample::play(wte::mgr::assets<wte::al_sample>::get<wte::al_sample>("shield"), "shield_sound");
             }
         }
     });
 
-    add_handler<GAME_HANDLES, EVENT_KEY_UP, handler::key>([](const int& key, ALLEGRO_DISPLAY* display) {
+    wte::add_handler<wte::GAME_HANDLES, wte::EVENT_KEY_UP, wte::handler::key>([](const int& key, ALLEGRO_DISPLAY* display) {
         if(key == config::controls::p1_key_up) {
             wte::entity_id player_id = wte::mgr::world::get_id("player");
             if(player_pols::x == 0.0f && player_pols::y == 0.0f) {
@@ -166,7 +166,6 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             wte::mgr::audio::sample::stop("shield_sound");
         }
     });
-    */
 }
 
 /*
