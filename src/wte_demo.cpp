@@ -616,6 +616,9 @@ void wte_demo::new_game(void) {
             );  //  End asteroid message dispatching.
         }  //  End asteroid spawner function.
     );
+    /* ********************************* */
+    /* *** End entity creation ********* */
+    /* ********************************* */
 
     //  Load music for the demo into the asset manager.
     wte::mgr::assets<wte::al_audio>::load<wte::al_audio>("music", wte::al_audio("music.ogg"));
