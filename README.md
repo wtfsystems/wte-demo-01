@@ -9,4 +9,4 @@ make
 ### Controls:
  - W A S D - move
  - Right Alt - shield
- - Right Ctrl - shield
+ - Right Ctrl - laser
