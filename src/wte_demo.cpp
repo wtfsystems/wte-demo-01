@@ -186,10 +186,10 @@ wte_demo::~wte_demo() {
  * Load the systems in order.
  */
 void wte_demo::load_systems(void) {
-    wte::mgr::systems::add(std::make_unique<wte::sys::movement>());
-    wte::mgr::systems::add(std::make_unique<wte::sys::colision>());
-    wte::mgr::systems::add(std::make_unique<wte::sys::logic>());
-    wte::mgr::systems::add(std::make_unique<wte::sys::gfx::animate>());
+    wte::mgr::systems::add<wte::sys::movement>();
+    wte::mgr::systems::add<wte::sys::colision>();
+    wte::mgr::systems::add<wte::sys::logic>();
+    wte::mgr::systems::add<wte::sys::gfx::animate>();
 }
 
 /*
