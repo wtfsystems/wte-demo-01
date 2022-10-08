@@ -46,6 +46,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     wte::add_handler<wte::GAME_HANDLES, wte::EVENT_KEY_DOWN, wte::handler::key>([](const int& key, ALLEGRO_DISPLAY* display) {
         if(key == config::controls::p1_key_up) {
             wte::entity_id player_id = wte::mgr::world::get_id("player");
+            player_pols::y = -1;
             const float rad = std::atan2(player_pols::y, player_pols::x);
             wte::mgr::world::set_component<wte::cmp::motion>(player_id)->direction = rad;
             wte::mgr::world::set_component<wte::cmp::motion>(player_id)->x_vel = 5.0f;
@@ -53,6 +54,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         }
         if(key == config::controls::p1_key_down) {
             wte::entity_id player_id = wte::mgr::world::get_id("player");
+            player_pols::y = 1;
             const float rad = std::atan2(player_pols::y, player_pols::x);
             wte::mgr::world::set_component<wte::cmp::motion>(player_id)->direction = rad;
             wte::mgr::world::set_component<wte::cmp::motion>(player_id)->x_vel = 5.0f;
@@ -60,6 +62,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         }
         if(key == config::controls::p1_key_left) {
             wte::entity_id player_id = wte::mgr::world::get_id("player");
+            player_pols::x = -1;
             const float rad = std::atan2(player_pols::y, player_pols::x);
             wte::mgr::world::set_component<wte::cmp::motion>(player_id)->direction = rad;
             wte::mgr::world::set_component<wte::cmp::motion>(player_id)->x_vel = 5.0f;
@@ -67,6 +70,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         }
         if(key == config::controls::p1_key_right) {
             wte::entity_id player_id = wte::mgr::world::get_id("player");
+            player_pols::x = 1;
             const float rad = std::atan2(player_pols::y, player_pols::x);
             wte::mgr::world::set_component<wte::cmp::motion>(player_id)->direction = rad;
             wte::mgr::world::set_component<wte::cmp::motion>(player_id)->x_vel = 5.0f;
@@ -113,6 +117,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     wte::add_handler<wte::GAME_HANDLES, wte::EVENT_KEY_UP, wte::handler::key>([](const int& key, ALLEGRO_DISPLAY* display) {
         if(key == config::controls::p1_key_up) {
             wte::entity_id player_id = wte::mgr::world::get_id("player");
+            if(player_pols::y < 0) player_pols::y = 0;
             if(player_pols::x == 0.0f && player_pols::y == 0.0f) {
                 wte::mgr::world::set_component<wte::cmp::motion>(player_id)->x_vel = 0.0f;
                 wte::mgr::world::set_component<wte::cmp::motion>(player_id)->y_vel = 0.0f;
@@ -120,6 +125,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         }
         if(key == config::controls::p1_key_down) {
             wte::entity_id player_id = wte::mgr::world::get_id("player");
+            if(player_pols::y > 0) player_pols::y = 0;
             if(player_pols::x == 0.0f && player_pols::y == 0.0f) {
                 wte::mgr::world::set_component<wte::cmp::motion>(player_id)->x_vel = 0.0f;
                 wte::mgr::world::set_component<wte::cmp::motion>(player_id)->y_vel = 0.0f;
@@ -127,6 +133,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         }
         if(key == config::controls::p1_key_left) {
             wte::entity_id player_id = wte::mgr::world::get_id("player");
+            if(player_pols::x < 0) player_pols::x = 0;
             if(player_pols::x == 0.0f && player_pols::y == 0.0f) {
                 wte::mgr::world::set_component<wte::cmp::motion>(player_id)->x_vel = 0.0f;
                 wte::mgr::world::set_component<wte::cmp::motion>(player_id)->y_vel = 0.0f;
@@ -134,6 +141,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         }
         if(key == config::controls::p1_key_right) {
             wte::entity_id player_id = wte::mgr::world::get_id("player");
+            if(player_pols::x > 0) player_pols::x = 0;
             if(player_pols::x == 0.0f && player_pols::y == 0.0f) {
                 wte::mgr::world::set_component<wte::cmp::motion>(player_id)->x_vel = 0.0f;
                 wte::mgr::world::set_component<wte::cmp::motion>(player_id)->y_vel = 0.0f;
