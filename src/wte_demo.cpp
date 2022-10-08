@@ -207,11 +207,7 @@ void wte_demo::new_game(void) {
     wte::mgr::world::add_component<stars>(e_id);
     wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>(
         "starfield",
-        wte::al_bitmap(
-            config::gfx::arena_w,
-            config::gfx::arena_h,
-            true
-        )
+        wte::al_bitmap(config::gfx::arena_w, config::gfx::arena_h)
     );
     wte::mgr::world::add_component<wte::cmp::gfx::background>(e_id,
         wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("starfield"), layer::background, 0, 0,
@@ -276,7 +272,7 @@ void wte_demo::new_game(void) {
     /* ********************************* */
     e_id = wte::mgr::world::new_entity();
     wte::mgr::world::set_name(e_id, "score_overlay");
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("score_overlay", wte::al_bitmap(200, 20, true));
+    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("score_overlay", wte::al_bitmap(200, 20));
     wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
         wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("score_overlay"),
         wte::mgr::assets<wte::al_font>::get<wte::al_font>("wte_default_font"),
@@ -297,7 +293,7 @@ void wte_demo::new_game(void) {
     /* ********************************* */
     e_id = wte::mgr::world::new_entity();
     wte::mgr::world::set_name(e_id, "player_info_overlay");
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("player_info_overlay", wte::al_bitmap(200, 20, true));
+    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("player_info_overlay", wte::al_bitmap(200, 20));
     wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
         wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("player_info_overlay"),
         wte::mgr::assets<wte::al_font>::get<wte::al_font>("wte_default_font"), layer::overlay,
