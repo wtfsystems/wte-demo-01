@@ -315,7 +315,7 @@ void wte_demo::new_game(void) {
     e_id = wte::mgr::world::new_entity();
     wte::mgr::world::set_name(e_id, "game_over_overlay");
     wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("game_over_overlay", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("game_over_overlay")->load("game_over.bmp");
+    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("game_over_overlay")->load("game_over.png");
     wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
         wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("game_over_overlay"),
         wte::mgr::assets<wte::al_font>::get<wte::al_font>("wte_default_font"),
@@ -340,7 +340,7 @@ void wte_demo::new_game(void) {
     wte::mgr::world::add_component<wte::cmp::motion>(e_id, 0.0f, 0.0f, 0.0f);
 
     wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("ship", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("ship")->load("ship.bmp");
+    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("ship")->load("ship.png");
     wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("ship"),
                                            layer::player, 32.0f, 32.0f, -11.0f, 0.0f, 1);
     wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("main", 0, 3);
@@ -431,7 +431,7 @@ void wte_demo::new_game(void) {
     wte::mgr::world::add_component<damage>(e_id, 3);
 
     wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("cannon", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("cannon")->load("cannon.bmp");
+    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("cannon")->load("cannon.png");
     wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("cannon"),
                                            layer::player, 10.0f, 200.0f, 0.0f, 0.0f, 2);
     wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("main", 0, 3);
@@ -475,7 +475,7 @@ void wte_demo::new_game(void) {
     wte::mgr::world::add_component<damage>(e_id, 100);
 
     wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("shield", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("shield")->load("shield.bmp");
+    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("shield")->load("shield.png");
     wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("shield"),
                                            layer::player, 64.0f, 64.0f, 0.0f, 0.0f, 6);
     wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("main", 0, 5);
@@ -536,7 +536,7 @@ void wte_demo::new_game(void) {
     /*  (5) Size                              */
     /* ************************************** */
     wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("asteroid", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("asteroid")->load("asteroid.bmp");
+    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("asteroid")->load("asteroid.png");
     wte::mgr::spawner::add("asteroid", 5,
         [](const wte::entity_id& e_id, const wte::msg_args& args) {
             int temp_size = std::stoi(args[5]);
