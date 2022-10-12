@@ -73,7 +73,10 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
     target_compile_options(wte_demo PRIVATE "-DWTE_BUILD_DEBUG")
 endif()
 
+#  Set up flags for building with Emscripten
 if(EMSCRIPTEN)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -s ASYNCIFY")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -s ASYNCIFY")
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
 
