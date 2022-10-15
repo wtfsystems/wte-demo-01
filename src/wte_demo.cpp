@@ -443,7 +443,7 @@ void wte_demo::load_systems(void) {
  * Create starting world and load world into the spawner.
  */
 void wte_demo::new_game(void) {
-
+    //  Spawn starting entities
     wte::mgr::spawner::spawn("starfield", {});
     wte::mgr::spawner::spawn("score_overlay", {});
     wte::mgr::spawner::spawn("player_info_overlay", {});
