@@ -169,6 +169,145 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         }
     });
 
+    /* ********************************* */
+    /* *** Asset loading *************** */
+    /* ********************************* */
+    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>(
+        "starfield",
+        wte::al_bitmap(config::gfx::arena_w, config::gfx::arena_h)
+    );
+    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("score_overlay", wte::al_bitmap(200, 20));
+    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("player_info_overlay", wte::al_bitmap(200, 20));
+    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("game_over_overlay", wte::al_bitmap());
+    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("game_over_overlay")->load("game_over.png");
+
+    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("asteroid", wte::al_bitmap());
+    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("asteroid")->load("asteroid.png");
+
+    /* ********************************* */
+    /* *** Background entity *********** */
+    /* ********************************* */
+    wte::mgr::spawner::add("starfield", 0,
+        [](const wte::entity_id& e_id, const wte::msg_args& args) {
+            wte::mgr::world::set_name(e_id, "starfield");
+            wte::mgr::world::add_component<stars>(e_id);
+            wte::mgr::world::add_component<wte::cmp::gfx::background>(e_id,
+                wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("starfield"), layer::background, 0, 0,
+                [](const wte::entity_id& bkg_id) {
+                    //  Define the animation process for the starfield.
+                    wte::mgr::world::set_component<wte::cmp::gfx::background>(bkg_id)->set_drawing();
+                    al_clear_to_color(WTE_COLOR_BLACK);
+
+                    //  Move the stars.
+                    for(std::size_t i = 0; i < MAX_STARS; i++) {
+                        wte::mgr::world::set_component<stars>(bkg_id)->y[i] +=
+                            wte::mgr::world::get_component<stars>(bkg_id)->speed[i] * wte::mgr::world::get_component<stars>(bkg_id)->speed_mult;
+                        if(wte::mgr::world::get_component<stars>(bkg_id)->y[i] > config::gfx::arena_h) {
+                            //  Make a new star.
+                            wte::mgr::world::set_component<stars>(bkg_id)->x[i] =
+                                std::rand() % config::gfx::arena_w + 1;
+                            wte::mgr::world::set_component<stars>(bkg_id)->y[i] = 0;
+                            wte::mgr::world::set_component<stars>(bkg_id)->speed[i] = (std::rand() % 3 + 1) * 3;
+                            wte::mgr::world::set_component<stars>(bkg_id)->color[i] = std::rand() % 4 + 1;
+                        }
+                    }
+
+                    //  Draw the stars.
+                    for(std::size_t i = 0; i < MAX_STARS; i++) {
+                        if(wte::mgr::world::get_component<stars>(bkg_id)->color[i] == 1 ||
+                        wte::mgr::world::get_component<stars>(bkg_id)->color[i] == 4)
+                            al_draw_pixel(wte::mgr::world::get_component<stars>(bkg_id)->x[i],
+                                        wte::mgr::world::get_component<stars>(bkg_id)->y[i], WTE_COLOR_WHITE);
+                        if(wte::mgr::world::get_component<stars>(bkg_id)->color[i] == 2)
+                            al_draw_pixel(wte::mgr::world::get_component<stars>(bkg_id)->x[i],
+                                        wte::mgr::world::get_component<stars>(bkg_id)->y[i], WTE_COLOR_YELLOW);
+                        if(wte::mgr::world::get_component<stars>(bkg_id)->color[i] == 3)
+                            al_draw_pixel(wte::mgr::world::get_component<stars>(bkg_id)->x[i],
+                                        wte::mgr::world::get_component<stars>(bkg_id)->y[i], WTE_COLOR_RED);
+                    }
+                });  //  End background rendering.
+
+                wte::mgr::world::add_component<wte::cmp::dispatcher>(e_id,
+                    [](const wte::entity_id& bkg_id, const wte::message& msg) {
+                        //  Define message processing for the starfield.
+                        if(msg.get_cmd() == "default") wte::mgr::world::set_component<stars>(bkg_id)->speed_mult = 1;
+                        if(msg.get_cmd() == "up") wte::mgr::world::set_component<stars>(bkg_id)->speed_mult *= 2;
+                        if(msg.get_cmd() == "down") wte::mgr::world::set_component<stars>(bkg_id)->speed_mult /= 2;
+                        if(msg.get_cmd() == "reset") {
+                            wte::mgr::world::set_component<stars>(bkg_id)->speed_mult = 1;
+
+                            for(std::size_t i = 0; i < MAX_STARS; i++) {
+                                wte::mgr::world::set_component<stars>(bkg_id)->x[i] =
+                                    std::rand() % config::gfx::arena_w + 1;
+                                wte::mgr::world::set_component<stars>(bkg_id)->y[i] =
+                                    std::rand() % config::gfx::arena_h + 1;
+                                wte::mgr::world::set_component<stars>(bkg_id)->speed[i] = (std::rand() % 3 + 1) * 3;
+                                wte::mgr::world::set_component<stars>(bkg_id)->color[i] = std::rand() % 4 + 1;
+                            }
+                        }
+                    }  //  End starfield message processing.
+                );  //  End dispatcher component.
+    });
+
+    /* ********************************* */
+    /* *** Score overlay entity ******** */
+    /* ********************************* */
+    wte::mgr::spawner::add("score_overlay", 0,
+        [](const wte::entity_id& e_id, const wte::msg_args& args) {
+            wte::mgr::world::set_name(e_id, "score_overlay");
+            wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
+                wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("score_overlay"),
+                wte::mgr::assets<wte::al_font>::get<wte::al_font>("wte_default_font"),
+                layer::overlay, config::gfx::arena_h - 20, 0,
+                [](const wte::entity_id& ovr_id) {
+                    //  Define what gets displayed on the overlay.
+                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->set_drawing();
+                    al_clear_to_color(WTE_COLOR_TRANSPARENT);
+                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("Score:  ", WTE_COLOR_WHITE, 110, 0, ALLEGRO_ALIGN_RIGHT);
+                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text(std::to_string(wte::mgr::variables::get<int>("score")), WTE_COLOR_WHITE, 110, 0, ALLEGRO_ALIGN_LEFT);
+                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("High Score:  ", WTE_COLOR_WHITE, 110, 10, ALLEGRO_ALIGN_RIGHT);
+                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text(std::to_string(wte::mgr::variables::get<int>("hiscore")), WTE_COLOR_WHITE, 110, 10, ALLEGRO_ALIGN_LEFT);
+                }
+            );  //  End score overlay drawing.
+    });
+
+    /* ********************************* */
+    /* *** Player Info overlay entity ** */
+    /* ********************************* */
+    wte::mgr::spawner::add("player_info_overlay", 0,
+        [](const wte::entity_id& e_id, const wte::msg_args& args) {
+            wte::mgr::world::set_name(e_id, "player_info_overlay");
+            wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
+                wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("player_info_overlay"),
+                wte::mgr::assets<wte::al_font>::get<wte::al_font>("wte_default_font"), layer::overlay,
+                config::gfx::arena_w - 200, config::gfx::arena_h - 20,
+                [](const wte::entity_id& ovr_id) {
+                    //  Define what gets displayed on the overlay.
+                    wte::entity_id shd_id = wte::mgr::world::get_id("shield");
+                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->set_drawing();
+                    al_clear_to_color(WTE_COLOR_TRANSPARENT);
+                    al_draw_filled_rectangle((float)(120 - wte::mgr::world::get_component<energy>(shd_id)->amt), 0, 120, 10, WTE_COLOR_YELLOW);
+                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("Shield", WTE_COLOR_WHITE, 200, 0, ALLEGRO_ALIGN_RIGHT);
+                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("Lives:  " + std::to_string(wte::mgr::variables::get<int>("lives")), WTE_COLOR_WHITE, 200, 10, ALLEGRO_ALIGN_RIGHT);
+                }
+            );  //  End info overlay drawing.
+    });
+
+    /* ********************************* */
+    /* *** Game Over overlay entity **** */
+    /* ********************************* */
+    wte::mgr::spawner::add("game_over_overlay", 0,
+        [](const wte::entity_id& e_id, const wte::msg_args& args) {
+            wte::mgr::world::set_name(e_id, "game_over_overlay");
+            wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
+                wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("game_over_overlay"),
+                wte::mgr::assets<wte::al_font>::get<wte::al_font>("wte_default_font"),
+                layer::overlay, (config::gfx::arena_w / 2) - 240, (config::gfx::arena_h / 2) - 66,
+                [](const wte::entity_id& ovr_id) {}
+            );
+            wte::mgr::world::set_component<wte::cmp::gfx::overlay>(e_id)->visible = false;
+    });
+
     /* ************************************** */
     /* Add the asteroid entity to the spawner */
     /* Arguments:                             */
@@ -178,8 +317,6 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     /*  (4) Velocity                          */
     /*  (5) Size                              */
     /* ************************************** */
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("asteroid", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("asteroid")->load("asteroid.png");
     wte::mgr::spawner::add("asteroid", 5,
         [](const wte::entity_id& e_id, const wte::msg_args& args) {
             int temp_size = std::stoi(args[5]);
@@ -295,132 +432,13 @@ void wte_demo::load_systems(void) {
  * Create starting world and load world into the spawner.
  */
 void wte_demo::new_game(void) {
-    wte::entity_id e_id;
 
-    /* ********************************* */
-    /* *** Background entity *********** */
-    /* ********************************* */
-    e_id = wte::mgr::world::new_entity();
-    wte::mgr::world::set_name(e_id, "starfield");
-    wte::mgr::world::add_component<stars>(e_id);
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>(
-        "starfield",
-        wte::al_bitmap(config::gfx::arena_w, config::gfx::arena_h)
-    );
-    wte::mgr::world::add_component<wte::cmp::gfx::background>(e_id,
-        wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("starfield"), layer::background, 0, 0,
-        [](const wte::entity_id& bkg_id) {
-            //  Define the animation process for the starfield.
-            wte::mgr::world::set_component<wte::cmp::gfx::background>(bkg_id)->set_drawing();
-            al_clear_to_color(WTE_COLOR_BLACK);
+    wte::mgr::spawner::spawn("starfield", {});
+    wte::mgr::spawner::spawn("score_overlay", {});
+    wte::mgr::spawner::spawn("player_info_overlay", {});
+    wte::mgr::spawner::spawn("game_over_overlay", {});
 
-            //  Move the stars.
-            for(std::size_t i = 0; i < MAX_STARS; i++) {
-                wte::mgr::world::set_component<stars>(bkg_id)->y[i] +=
-                    wte::mgr::world::get_component<stars>(bkg_id)->speed[i] * wte::mgr::world::get_component<stars>(bkg_id)->speed_mult;
-                if(wte::mgr::world::get_component<stars>(bkg_id)->y[i] > config::gfx::arena_h) {
-                    //  Make a new star.
-                    wte::mgr::world::set_component<stars>(bkg_id)->x[i] =
-                        std::rand() % config::gfx::arena_w + 1;
-                    wte::mgr::world::set_component<stars>(bkg_id)->y[i] = 0;
-                    wte::mgr::world::set_component<stars>(bkg_id)->speed[i] = (std::rand() % 3 + 1) * 3;
-                    wte::mgr::world::set_component<stars>(bkg_id)->color[i] = std::rand() % 4 + 1;
-                }
-            }
-
-            //  Draw the stars.
-            for(std::size_t i = 0; i < MAX_STARS; i++) {
-                if(wte::mgr::world::get_component<stars>(bkg_id)->color[i] == 1 ||
-                   wte::mgr::world::get_component<stars>(bkg_id)->color[i] == 4)
-                    al_draw_pixel(wte::mgr::world::get_component<stars>(bkg_id)->x[i],
-                                  wte::mgr::world::get_component<stars>(bkg_id)->y[i], WTE_COLOR_WHITE);
-                if(wte::mgr::world::get_component<stars>(bkg_id)->color[i] == 2)
-                    al_draw_pixel(wte::mgr::world::get_component<stars>(bkg_id)->x[i],
-                                  wte::mgr::world::get_component<stars>(bkg_id)->y[i], WTE_COLOR_YELLOW);
-                if(wte::mgr::world::get_component<stars>(bkg_id)->color[i] == 3)
-                    al_draw_pixel(wte::mgr::world::get_component<stars>(bkg_id)->x[i],
-                                  wte::mgr::world::get_component<stars>(bkg_id)->y[i], WTE_COLOR_RED);
-            }
-        }
-    );  //  End background rendering.
-
-    wte::mgr::world::add_component<wte::cmp::dispatcher>(e_id,
-        [](const wte::entity_id& bkg_id, const wte::message& msg) {
-            //  Define message processing for the starfield.
-            if(msg.get_cmd() == "default") wte::mgr::world::set_component<stars>(bkg_id)->speed_mult = 1;
-            if(msg.get_cmd() == "up") wte::mgr::world::set_component<stars>(bkg_id)->speed_mult *= 2;
-            if(msg.get_cmd() == "down") wte::mgr::world::set_component<stars>(bkg_id)->speed_mult /= 2;
-            if(msg.get_cmd() == "reset") {
-                wte::mgr::world::set_component<stars>(bkg_id)->speed_mult = 1;
-
-                for(std::size_t i = 0; i < MAX_STARS; i++) {
-                    wte::mgr::world::set_component<stars>(bkg_id)->x[i] =
-                        std::rand() % config::gfx::arena_w + 1;
-                    wte::mgr::world::set_component<stars>(bkg_id)->y[i] =
-                        std::rand() % config::gfx::arena_h + 1;
-                    wte::mgr::world::set_component<stars>(bkg_id)->speed[i] = (std::rand() % 3 + 1) * 3;
-                    wte::mgr::world::set_component<stars>(bkg_id)->color[i] = std::rand() % 4 + 1;
-                }
-            }
-        }  //  End starfield message processing.
-    );  //  End dispatcher component.
-
-    /* ********************************* */
-    /* *** Score overlay entity ******** */
-    /* ********************************* */
-    e_id = wte::mgr::world::new_entity();
-    wte::mgr::world::set_name(e_id, "score_overlay");
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("score_overlay", wte::al_bitmap(200, 20));
-    wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
-        wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("score_overlay"),
-        wte::mgr::assets<wte::al_font>::get<wte::al_font>("wte_default_font"),
-        layer::overlay, config::gfx::arena_h - 20, 0,
-        [](const wte::entity_id& ovr_id) {
-            //  Define what gets displayed on the overlay.
-            wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->set_drawing();
-            al_clear_to_color(WTE_COLOR_TRANSPARENT);
-            wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("Score:  ", WTE_COLOR_WHITE, 110, 0, ALLEGRO_ALIGN_RIGHT);
-            wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text(std::to_string(wte::mgr::variables::get<int>("score")), WTE_COLOR_WHITE, 110, 0, ALLEGRO_ALIGN_LEFT);
-            wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("High Score:  ", WTE_COLOR_WHITE, 110, 10, ALLEGRO_ALIGN_RIGHT);
-            wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text(std::to_string(wte::mgr::variables::get<int>("hiscore")), WTE_COLOR_WHITE, 110, 10, ALLEGRO_ALIGN_LEFT);
-        }
-    );  //  End score overlay drawing.
-
-    /* ********************************* */
-    /* *** Player Info overlay entity ** */
-    /* ********************************* */
-    e_id = wte::mgr::world::new_entity();
-    wte::mgr::world::set_name(e_id, "player_info_overlay");
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("player_info_overlay", wte::al_bitmap(200, 20));
-    wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
-        wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("player_info_overlay"),
-        wte::mgr::assets<wte::al_font>::get<wte::al_font>("wte_default_font"), layer::overlay,
-        config::gfx::arena_w - 200, config::gfx::arena_h - 20,
-        [](const wte::entity_id& ovr_id) {
-            //  Define what gets displayed on the overlay.
-            wte::entity_id shd_id = wte::mgr::world::get_id("shield");
-            wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->set_drawing();
-            al_clear_to_color(WTE_COLOR_TRANSPARENT);
-            al_draw_filled_rectangle((float)(120 - wte::mgr::world::get_component<energy>(shd_id)->amt), 0, 120, 10, WTE_COLOR_YELLOW);
-            wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("Shield", WTE_COLOR_WHITE, 200, 0, ALLEGRO_ALIGN_RIGHT);
-            wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("Lives:  " + std::to_string(wte::mgr::variables::get<int>("lives")), WTE_COLOR_WHITE, 200, 10, ALLEGRO_ALIGN_RIGHT);
-        }
-    );  //  End info overlay drawing.
-
-    /* ********************************* */
-    /* *** Game Over overlay entity **** */
-    /* ********************************* */
-    e_id = wte::mgr::world::new_entity();
-    wte::mgr::world::set_name(e_id, "game_over_overlay");
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("game_over_overlay", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("game_over_overlay")->load("game_over.png");
-    wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
-        wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("game_over_overlay"),
-        wte::mgr::assets<wte::al_font>::get<wte::al_font>("wte_default_font"),
-        layer::overlay, (config::gfx::arena_w / 2) - 240, (config::gfx::arena_h / 2) - 66,
-        [](const wte::entity_id& ovr_id) {}
-    );
-    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(e_id)->visible = false;
+    wte::entity_id e_id = wte::mgr::world::new_entity();
 
     /* ********************************* */
     /* *** Player entity *************** */

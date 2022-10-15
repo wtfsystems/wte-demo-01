@@ -168,6 +168,104 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             wte::mgr::audio::sample::stop("shield_sound");
         }
     });
+
+    /* ************************************** */
+    /* Add the asteroid entity to the spawner */
+    /* Arguments:                             */
+    /*  (1) X location                        */
+    /*  (2) Y location                        */
+    /*  (3) Direction in degrees              */
+    /*  (4) Velocity                          */
+    /*  (5) Size                              */
+    /* ************************************** */
+    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("asteroid", wte::al_bitmap());
+    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("asteroid")->load("asteroid.png");
+    wte::mgr::spawner::add("asteroid", 5,
+        [](const wte::entity_id& e_id, const wte::msg_args& args) {
+            int temp_size = std::stoi(args[5]);
+            if(temp_size < 1) temp_size = 1;
+            if(temp_size > 8) temp_size = 8;
+
+            wte::mgr::world::set_name(e_id, "asteroid" + std::to_string(e_id));
+            wte::mgr::world::add_component<wte::cmp::location>(e_id, std::stof(args[1]), std::stof(args[2]));
+            wte::mgr::world::add_component<wte::cmp::hitbox>(e_id, (float)(temp_size * 16), (float)(temp_size * 16), 1);
+            wte::mgr::world::add_component<health>(e_id, temp_size * 10, temp_size * 10);
+            wte::mgr::world::add_component<damage>(e_id, 10);
+            wte::mgr::world::add_component<size>(e_id, temp_size);
+            wte::mgr::world::add_component<wte::cmp::motion>(e_id, 0.0f, 0.0f, 0.0f);
+            wte::mgr::world::set_component<wte::cmp::motion>(e_id)->direction = std::stof(args[3]) * (M_PI / 180);
+            wte::mgr::world::set_component<wte::cmp::motion>(e_id)->x_vel = std::stof(args[4]);
+            wte::mgr::world::set_component<wte::cmp::motion>(e_id)->y_vel = std::stof(args[4]);
+
+            wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("asteroid"),
+                layer::enemy, 16.0f, 16.0f, 0.0f, 0.0f, (int)(30 / std::stof(args[4])));
+            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("main", 0, 5);
+            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->set_cycle("main");
+            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->scale_factor_x = (float)temp_size;
+            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->scale_factor_y = (float)temp_size;
+            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->rotated = true;
+            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->direction = std::stof(args[3]) * (M_PI / 180);
+
+            //  Asteroid logic.
+            wte::mgr::world::add_component<wte::cmp::ai>(e_id,
+                [](const wte::entity_id& ast_id) {
+                    //  AI for asteroids defined here.
+                    //  Perform OOB check.
+                    if(wte::mgr::world::get_component<wte::cmp::location>(ast_id)->pos_y > (float)(config::gfx::arena_h + 100)) {
+                        wte::mgr::messages::add(wte::message("spawner", "delete", wte::mgr::world::get_name(ast_id)));
+                    }
+
+                    //  Health check.  If asteroid's HP is <= 0, reward player with points and delete the entity.
+                    if(wte::mgr::world::get_component<health>(ast_id)->hp <= 0) {
+                        wte::mgr::messages::add(wte::message("spawner", "delete", wte::mgr::world::get_name(ast_id)));
+                        wte::mgr::audio::sample::play(wte::mgr::assets<wte::al_sample>::get<wte::al_sample>("megumin"), "once", 1.0f, ALLEGRO_AUDIO_PAN_NONE, 1.8f);
+
+                        wte::mgr::variables::set("score",
+                            (wte::mgr::variables::get<int>("score") +
+                            (10 * wte::mgr::world::get_component<size>(ast_id)->the_size)));
+
+                        //  If the asteroid was size >= 4, split into two.
+                        if(wte::mgr::world::get_component<size>(ast_id)->the_size >= 4) {
+                            const int new_size = wte::mgr::world::get_component<size>(ast_id)->the_size / 2;
+                            float dir_a = wte::mgr::world::get_component<wte::cmp::motion>(ast_id)->direction - 90.0f;
+                            if(dir_a < 0.0f) dir_a = 0.0f;
+                            float dir_b = wte::mgr::world::get_component<wte::cmp::motion>(ast_id)->direction + 90.0f;
+                            if(dir_b > 360.0f) dir_b = 360.0f;
+                            const float new_x = wte::mgr::world::get_component<wte::cmp::location>(ast_id)->pos_x;
+                            const float new_y = wte::mgr::world::get_component<wte::cmp::location>(ast_id)->pos_y;
+                            const float new_vel = wte::mgr::world::get_component<wte::cmp::motion>(ast_id)->x_vel / 2;
+                            std::string new_spawner_a = "asteroid;" + std::to_string(new_x) + ";" +
+                                std::to_string(new_y) + ";" + std::to_string(dir_a) + ";" +
+                                std::to_string(new_vel) + ";" + std::to_string(new_size);
+                            std::string new_spawner_b = "asteroid;" + std::to_string(new_x) + ";" +
+                                std::to_string(new_y) + ";" + std::to_string(dir_b) + ";" +
+                                std::to_string(new_vel) + ";" + std::to_string(new_size);
+                            wte::mgr::messages::add(wte::message("spawner", "new", new_spawner_a));
+                            wte::mgr::messages::add(wte::message("spawner", "new", new_spawner_b));
+                        }
+                    }
+                }
+            );  //  End asteroid AI
+
+            //  Asteroid message processing.
+            wte::mgr::world::add_component<wte::cmp::dispatcher>(e_id,
+                [](const wte::entity_id& ast_id, const wte::message& msg) {
+                    if(msg.get_cmd() == "colision") {
+                        //  Deal damage
+                        wte::mgr::messages::add(wte::message("entities", msg.get_from(), msg.get_to(),
+                            "damage", std::to_string(wte::mgr::world::get_component<damage>(ast_id)->dmg)));
+                    }
+
+                    if(msg.get_cmd() == "damage") {
+                        wte::mgr::world::set_component<health>(ast_id)->hp -= std::stoi(msg.get_arg(0));
+                    }
+                }
+            );  //  End asteroid message dispatching.
+        }  //  End asteroid spawner function.
+    );
+    /* ********************************* */
+    /* *** End entity creation ********* */
+    /* ********************************* */
 }
 
 /*
@@ -525,104 +623,6 @@ void wte_demo::new_game(void) {
             }
         }
     );  //  End shield message processing.
-
-    /* ************************************** */
-    /* Add the asteroid entity to the spawner */
-    /* Arguments:                             */
-    /*  (1) X location                        */
-    /*  (2) Y location                        */
-    /*  (3) Direction in degrees              */
-    /*  (4) Velocity                          */
-    /*  (5) Size                              */
-    /* ************************************** */
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("asteroid", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("asteroid")->load("asteroid.png");
-    wte::mgr::spawner::add("asteroid", 5,
-        [](const wte::entity_id& e_id, const wte::msg_args& args) {
-            int temp_size = std::stoi(args[5]);
-            if(temp_size < 1) temp_size = 1;
-            if(temp_size > 8) temp_size = 8;
-
-            wte::mgr::world::set_name(e_id, "asteroid" + std::to_string(e_id));
-            wte::mgr::world::add_component<wte::cmp::location>(e_id, std::stof(args[1]), std::stof(args[2]));
-            wte::mgr::world::add_component<wte::cmp::hitbox>(e_id, (float)(temp_size * 16), (float)(temp_size * 16), 1);
-            wte::mgr::world::add_component<health>(e_id, temp_size * 10, temp_size * 10);
-            wte::mgr::world::add_component<damage>(e_id, 10);
-            wte::mgr::world::add_component<size>(e_id, temp_size);
-            wte::mgr::world::add_component<wte::cmp::motion>(e_id, 0.0f, 0.0f, 0.0f);
-            wte::mgr::world::set_component<wte::cmp::motion>(e_id)->direction = std::stof(args[3]) * (M_PI / 180);
-            wte::mgr::world::set_component<wte::cmp::motion>(e_id)->x_vel = std::stof(args[4]);
-            wte::mgr::world::set_component<wte::cmp::motion>(e_id)->y_vel = std::stof(args[4]);
-
-            wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("asteroid"),
-                layer::enemy, 16.0f, 16.0f, 0.0f, 0.0f, (int)(30 / std::stof(args[4])));
-            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("main", 0, 5);
-            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->set_cycle("main");
-            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->scale_factor_x = (float)temp_size;
-            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->scale_factor_y = (float)temp_size;
-            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->rotated = true;
-            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->direction = std::stof(args[3]) * (M_PI / 180);
-
-            //  Asteroid logic.
-            wte::mgr::world::add_component<wte::cmp::ai>(e_id,
-                [](const wte::entity_id& ast_id) {
-                    //  AI for asteroids defined here.
-                    //  Perform OOB check.
-                    if(wte::mgr::world::get_component<wte::cmp::location>(ast_id)->pos_y > (float)(config::gfx::arena_h + 100)) {
-                        wte::mgr::messages::add(wte::message("spawner", "delete", wte::mgr::world::get_name(ast_id)));
-                    }
-
-                    //  Health check.  If asteroid's HP is <= 0, reward player with points and delete the entity.
-                    if(wte::mgr::world::get_component<health>(ast_id)->hp <= 0) {
-                        wte::mgr::messages::add(wte::message("spawner", "delete", wte::mgr::world::get_name(ast_id)));
-                        wte::mgr::audio::sample::play(wte::mgr::assets<wte::al_sample>::get<wte::al_sample>("megumin"), "once", 1.0f, ALLEGRO_AUDIO_PAN_NONE, 1.8f);
-
-                        wte::mgr::variables::set("score",
-                            (wte::mgr::variables::get<int>("score") +
-                            (10 * wte::mgr::world::get_component<size>(ast_id)->the_size)));
-
-                        //  If the asteroid was size >= 4, split into two.
-                        if(wte::mgr::world::get_component<size>(ast_id)->the_size >= 4) {
-                            const int new_size = wte::mgr::world::get_component<size>(ast_id)->the_size / 2;
-                            float dir_a = wte::mgr::world::get_component<wte::cmp::motion>(ast_id)->direction - 90.0f;
-                            if(dir_a < 0.0f) dir_a = 0.0f;
-                            float dir_b = wte::mgr::world::get_component<wte::cmp::motion>(ast_id)->direction + 90.0f;
-                            if(dir_b > 360.0f) dir_b = 360.0f;
-                            const float new_x = wte::mgr::world::get_component<wte::cmp::location>(ast_id)->pos_x;
-                            const float new_y = wte::mgr::world::get_component<wte::cmp::location>(ast_id)->pos_y;
-                            const float new_vel = wte::mgr::world::get_component<wte::cmp::motion>(ast_id)->x_vel / 2;
-                            std::string new_spawner_a = "asteroid;" + std::to_string(new_x) + ";" +
-                                std::to_string(new_y) + ";" + std::to_string(dir_a) + ";" +
-                                std::to_string(new_vel) + ";" + std::to_string(new_size);
-                            std::string new_spawner_b = "asteroid;" + std::to_string(new_x) + ";" +
-                                std::to_string(new_y) + ";" + std::to_string(dir_b) + ";" +
-                                std::to_string(new_vel) + ";" + std::to_string(new_size);
-                            wte::mgr::messages::add(wte::message("spawner", "new", new_spawner_a));
-                            wte::mgr::messages::add(wte::message("spawner", "new", new_spawner_b));
-                        }
-                    }
-                }
-            );  //  End asteroid AI
-
-            //  Asteroid message processing.
-            wte::mgr::world::add_component<wte::cmp::dispatcher>(e_id,
-                [](const wte::entity_id& ast_id, const wte::message& msg) {
-                    if(msg.get_cmd() == "colision") {
-                        //  Deal damage
-                        wte::mgr::messages::add(wte::message("entities", msg.get_from(), msg.get_to(),
-                            "damage", std::to_string(wte::mgr::world::get_component<damage>(ast_id)->dmg)));
-                    }
-
-                    if(msg.get_cmd() == "damage") {
-                        wte::mgr::world::set_component<health>(ast_id)->hp -= std::stoi(msg.get_arg(0));
-                    }
-                }
-            );  //  End asteroid message dispatching.
-        }  //  End asteroid spawner function.
-    );
-    /* ********************************* */
-    /* *** End entity creation ********* */
-    /* ********************************* */
 
     //  Load music for the demo into the asset manager.
     wte::mgr::assets<wte::al_audio>::load<wte::al_audio>("music", wte::al_audio("music.ogg"));
