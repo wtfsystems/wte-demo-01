@@ -180,7 +180,12 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("player_info_overlay", wte::al_bitmap(200, 20));
     wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("game_over_overlay", wte::al_bitmap());
     wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("game_over_overlay")->load("game_over.png");
-
+    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("ship", wte::al_bitmap());
+    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("ship")->load("ship.png");
+    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("cannon", wte::al_bitmap());
+    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("cannon")->load("cannon.png");
+    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("shield", wte::al_bitmap());
+    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("shield")->load("shield.png");
     wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("asteroid", wte::al_bitmap());
     wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("asteroid")->load("asteroid.png");
 
@@ -194,7 +199,6 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     /* **************************************************** */
     /* *** ENTITY CREATION ******************************** */
     /* **************************************************** */
-
     /* ********************************* */
     /* *** Background entity *********** */
     /* ********************************* */
@@ -317,6 +321,205 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 [](const wte::entity_id& ovr_id) {}
             );
             wte::mgr::world::set_component<wte::cmp::gfx::overlay>(e_id)->visible = false;
+    });
+
+    /* ********************************* */
+    /* *** Player entity *************** */
+    /* ********************************* */
+    wte::mgr::spawner::add("player", 0,
+        [](const wte::entity_id& e_id, const wte::msg_args& args) {
+            wte::mgr::world::set_name(e_id, "player");
+            wte::mgr::world::add_component<wte::cmp::location>(e_id,
+                (config::gfx::arena_w / 2) - 5,
+                config::gfx::arena_h - 40);
+            wte::mgr::world::add_component<wte::cmp::hitbox>(e_id, 10, 10, 0);
+            wte::mgr::world::add_component<wte::cmp::bounding_box>(e_id, 12.0f, 0.0f,
+                (float)(config::gfx::arena_w - 21),
+                (float)(config::gfx::arena_h - 32));
+            wte::mgr::world::add_component<health>(e_id, 1, 1);
+            wte::mgr::world::add_component<wte::cmp::motion>(e_id, 0.0f, 0.0f, 0.0f);
+            wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("ship"),
+                                                layer::player, 32.0f, 32.0f, -11.0f, 0.0f, 1);
+            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("main", 0, 3);
+            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("death", 4, 7);
+            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->set_cycle("main");
+
+            //  Player logic.
+            wte::mgr::world::add_component<wte::cmp::ai>(e_id,
+                [](const wte::entity_id& plr_id) {
+                    if(wte::mgr::world::get_component<health>(plr_id)->hp <= 0) {  //  Check player health.
+                        wte::mgr::world::set_component<wte::cmp::ai>(plr_id)->enabled = false;
+                        wte::mgr::world::set_component<health>(plr_id)->hp = wte::mgr::world::get_component<health>(plr_id)->hp_max;
+                        std::string player_name = wte::mgr::world::get_name(plr_id);
+                        wte::mgr::messages::add(wte::message("entities", player_name, player_name, "death", ""));
+                    }
+                }
+            );  //  End player logic.
+
+            //  Player message handling.
+            wte::mgr::world::add_component<wte::cmp::dispatcher>(e_id,
+                [](const wte::entity_id& plr_id, const wte::message& msg) {
+                    //  Process player death.
+                    if(msg.get_cmd() == "death") {
+                        config::flags::input_enabled = false;
+                        //  Make sure cannon stops firing
+                        wte::entity_id cannon_id = wte::mgr::world::get_id("main_cannon");
+                        wte::mgr::world::set_component<wte::cmp::gfx::sprite>(cannon_id)->visible = false;
+                        wte::mgr::world::set_component<wte::cmp::ai>(cannon_id)->enabled = false;
+                        wte::mgr::world::set_component<wte::cmp::hitbox>(cannon_id)->solid = false;
+                        wte::mgr::audio::sample::stop("cannon_fire");
+
+                        //  Just to make sure... turn shield off
+                        wte::entity_id shield_id = wte::mgr::world::get_id("shield");
+                        wte::mgr::world::set_component<wte::cmp::gfx::sprite>(shield_id)->visible = false;
+                        wte::mgr::world::set_component<wte::cmp::ai>(shield_id)->enabled = false;
+                        wte::mgr::world::set_component<wte::cmp::hitbox>(shield_id)->solid = false;
+                        wte::mgr::audio::sample::stop("shield_sound");
+
+                        wte::mgr::world::set_component<wte::cmp::hitbox>(plr_id)->solid = false;
+
+                        wte::mgr::audio::sample::play(wte::mgr::assets<wte::al_sample>::get<wte::al_sample>("megumin"), "once");
+                        wte::mgr::variables::set<int>("lives", wte::mgr::variables::get<int>("lives") - 1);
+                        wte::mgr::world::set_component<wte::cmp::motion>(plr_id)->x_vel = 0.0f;
+                        wte::mgr::world::set_component<wte::cmp::motion>(plr_id)->y_vel = 0.0f;
+                        wte::mgr::world::set_component<wte::cmp::gfx::sprite>(plr_id)->set_cycle("death");
+                        if(wte::mgr::variables::get<int>("lives") == 0) {
+                            //  Game over!
+                            wte::mgr::messages::add(wte::message(wte::engine_time::check() + 180, "system", "end-game", ""));
+                            wte::entity_id go_id = wte::mgr::world::get_id("game_over_overlay");
+                            wte::mgr::world::set_component<wte::cmp::gfx::overlay>(go_id)->visible = true;
+                        } else {
+                            std::string player_name = wte::mgr::world::get_name(plr_id);
+                            wte::mgr::messages::add(
+                                wte::message(wte::engine_time::check() + 120, "entities", player_name, player_name, "reset", "")
+                            );
+                        }
+                    }
+
+                    //  Reset player.
+                    if(msg.get_cmd() == "reset") {
+                        config::flags::input_enabled = true;
+                        player_pols::reset();
+                        wte::mgr::world::set_component<wte::cmp::motion>(plr_id)->x_vel = 0.0f;
+                        wte::mgr::world::set_component<wte::cmp::motion>(plr_id)->y_vel = 0.0f;
+                        wte::mgr::world::set_component<wte::cmp::location>(plr_id)->pos_x = (float)((config::gfx::arena_w / 2) - 5);
+                        wte::mgr::world::set_component<wte::cmp::location>(plr_id)->pos_y = (float)(config::gfx::arena_h - 40);
+                        wte::mgr::world::set_component<health>(plr_id)->hp = wte::mgr::world::get_component<health>(plr_id)->hp_max;
+                        wte::mgr::world::set_component<wte::cmp::ai>(plr_id)->enabled = true;
+                        wte::mgr::world::set_component<wte::cmp::gfx::sprite>(plr_id)->set_cycle("main");
+                        wte::mgr::world::set_component<wte::cmp::hitbox>(plr_id)->solid = true;
+                    }
+
+                    //  Take damage.
+                    if(msg.get_cmd() == "damage") {
+                        wte::mgr::world::set_component<health>(plr_id)->hp -= std::stoi(msg.get_arg(0));
+                    }
+                }
+            );  //  End player message processing.
+    });
+
+    /* ********************************* */
+    /* *** Main cannon entity ********** */
+    /* ********************************* */
+    wte::mgr::spawner::add("main_cannon", 0,
+        [](const wte::entity_id& e_id, const wte::msg_args& args) {
+            wte::mgr::world::set_name(e_id, "main_cannon");
+            wte::mgr::world::add_component<wte::cmp::location>(e_id, 0, 0);
+            wte::mgr::world::add_component<wte::cmp::hitbox>(e_id, 10, 200, 0, false);
+            wte::mgr::world::set_component<wte::cmp::hitbox>(e_id)->solid = false;
+            wte::mgr::world::add_component<damage>(e_id, 3);
+            wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("cannon"),
+                                                layer::player, 10.0f, 200.0f, 0.0f, 0.0f, 2);
+            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("main", 0, 3);
+            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->set_cycle("main");
+            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->visible = false;
+
+            //  Cannon logic.
+            wte::mgr::world::add_component<wte::cmp::ai>(e_id,
+                [](const wte::entity_id& can_id) {
+                    wte::entity_id player_entity = wte::mgr::world::get_id("player");
+                    //  Set the cannon's location to match the player.
+                    wte::mgr::world::set_component<wte::cmp::location>(can_id)->pos_x =
+                        wte::mgr::world::get_component<wte::cmp::location>(player_entity)->pos_x;
+                    wte::mgr::world::set_component<wte::cmp::location>(can_id)->pos_y =
+                        wte::mgr::world::get_component<wte::cmp::location>(player_entity)->pos_y -
+                        wte::mgr::world::get_component<wte::cmp::hitbox>(can_id)->height;
+                }
+            );  //  End cannon logic.
+            wte::mgr::world::set_component<wte::cmp::ai>(e_id)->enabled = false;
+
+            //  Cannon message processing.
+            wte::mgr::world::add_component<wte::cmp::dispatcher>(e_id,
+                [](const wte::entity_id& can_id, const wte::message& msg) {
+                    if(msg.get_cmd() == "colision") {
+                        //  Deal damage
+                        wte::mgr::messages::add(wte::message("entities", msg.get_from(), msg.get_to(),
+                            "damage", std::to_string(wte::mgr::world::get_component<damage>(can_id)->dmg)));
+                    }
+                }
+            );  //  End cannon message processing.
+    });
+
+    /* ********************************* */
+    /* *** Shield entity *************** */
+    /* ********************************* */
+    wte::mgr::spawner::add("shield", 0,
+        [](const wte::entity_id& e_id, const wte::msg_args& args) {
+            wte::mgr::world::set_name(e_id, "shield");
+            wte::mgr::world::add_component<wte::cmp::location>(e_id, 0, 0);
+            wte::mgr::world::add_component<wte::cmp::hitbox>(e_id, 64, 64, 0, false);
+            wte::mgr::world::set_component<wte::cmp::hitbox>(e_id)->solid = false;
+            wte::mgr::world::add_component<energy>(e_id, 50, 100);
+            wte::mgr::world::add_component<damage>(e_id, 100);
+            wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("shield"),
+                                                layer::player, 64.0f, 64.0f, 0.0f, 0.0f, 6);
+            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("main", 0, 5);
+            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->set_cycle("main");
+            wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->visible = false;
+
+            //  Shield logic.
+            wte::mgr::world::add_component<wte::cmp::ai>(e_id,
+                //  Enabeled AI.
+                [](const wte::entity_id& shd_id) {
+                    wte::entity_id player_entity = wte::mgr::world::get_id("player");
+                    //  Set the shield's location to match the player.
+                    wte::mgr::world::set_component<wte::cmp::location>(shd_id)->pos_x =
+                        wte::mgr::world::get_component<wte::cmp::location>(player_entity)->pos_x - 28.0f;
+                    wte::mgr::world::set_component<wte::cmp::location>(shd_id)->pos_y =
+                        wte::mgr::world::get_component<wte::cmp::location>(player_entity)->pos_y - 16.0f;
+
+                    //  Drain the shield.
+                    if(wte::mgr::world::set_component<energy>(shd_id)->amt > 0)
+                        wte::mgr::world::set_component<energy>(shd_id)->amt -= 1;
+
+                    if(wte::mgr::world::get_component<energy>(shd_id)->amt <= 0) {
+                        //  Disable shield.
+                        wte::mgr::world::set_component<wte::cmp::gfx::sprite>(shd_id)->visible = false;
+                        wte::mgr::world::set_component<wte::cmp::ai>(shd_id)->enabled = false;
+                        wte::mgr::world::set_component<wte::cmp::hitbox>(player_entity)->solid = true;
+                        //  Stop sound effect.
+                        wte::mgr::audio::sample::stop("shield_sound");
+                    }
+                },
+                //  Disabeled AI.
+                [](const wte::entity_id& shd_id) {
+                    //  Recharge the shield.
+                    if(wte::mgr::world::set_component<energy>(shd_id)->amt < wte::mgr::world::set_component<energy>(shd_id)->amt_max)
+                        wte::mgr::world::set_component<energy>(shd_id)->amt += 1;
+                }
+            );  //  End shield logic.
+            wte::mgr::world::set_component<wte::cmp::ai>(e_id)->enabled = false;
+
+            //  Shield message processing.
+            wte::mgr::world::add_component<wte::cmp::dispatcher>(e_id,
+                [](const wte::entity_id& shd_id, const wte::message& msg) {
+                    if(msg.get_cmd() == "colision") {
+                        //  Deal damage
+                        wte::mgr::messages::add(wte::message("entities", msg.get_from(), msg.get_to(),
+                            "damage", std::to_string(wte::mgr::world::get_component<damage>(shd_id)->dmg)));
+                    }
+                }
+            );  //  End shield message processing.
     });
 
     /* ************************************** */
@@ -448,210 +651,9 @@ void wte_demo::new_game(void) {
     wte::mgr::spawner::spawn("score_overlay", {});
     wte::mgr::spawner::spawn("player_info_overlay", {});
     wte::mgr::spawner::spawn("game_over_overlay", {});
-
-    wte::entity_id e_id = wte::mgr::world::new_entity();
-
-    /* ********************************* */
-    /* *** Player entity *************** */
-    /* ********************************* */
-    e_id = wte::mgr::world::new_entity();
-    wte::mgr::world::set_name(e_id, "player");
-    wte::mgr::world::add_component<wte::cmp::location>(e_id,
-        (config::gfx::arena_w / 2) - 5,
-         config::gfx::arena_h - 40);
-    wte::mgr::world::add_component<wte::cmp::hitbox>(e_id, 10, 10, 0);
-    wte::mgr::world::add_component<wte::cmp::bounding_box>(e_id, 12.0f, 0.0f,
-        (float)(config::gfx::arena_w - 21),
-        (float)(config::gfx::arena_h - 32));
-    wte::mgr::world::add_component<health>(e_id, 1, 1);
-    wte::mgr::world::add_component<wte::cmp::motion>(e_id, 0.0f, 0.0f, 0.0f);
-
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("ship", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("ship")->load("ship.png");
-    wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("ship"),
-                                           layer::player, 32.0f, 32.0f, -11.0f, 0.0f, 1);
-    wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("main", 0, 3);
-    wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("death", 4, 7);
-    wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->set_cycle("main");
-
-    //  Player logic.
-    wte::mgr::world::add_component<wte::cmp::ai>(e_id,
-        [](const wte::entity_id& plr_id) {
-            if(wte::mgr::world::get_component<health>(plr_id)->hp <= 0) {  //  Check player health.
-                wte::mgr::world::set_component<wte::cmp::ai>(plr_id)->enabled = false;
-                wte::mgr::world::set_component<health>(plr_id)->hp = wte::mgr::world::get_component<health>(plr_id)->hp_max;
-                std::string player_name = wte::mgr::world::get_name(plr_id);
-                wte::mgr::messages::add(wte::message("entities", player_name, player_name, "death", ""));
-            }
-        }
-    );  //  End player logic.
-
-    //  Player message handling.
-    wte::mgr::world::add_component<wte::cmp::dispatcher>(e_id,
-        [](const wte::entity_id& plr_id, const wte::message& msg) {
-            //  Process player death.
-            if(msg.get_cmd() == "death") {
-                config::flags::input_enabled = false;
-                //  Make sure cannon stops firing
-                wte::entity_id cannon_id = wte::mgr::world::get_id("main_cannon");
-                wte::mgr::world::set_component<wte::cmp::gfx::sprite>(cannon_id)->visible = false;
-                wte::mgr::world::set_component<wte::cmp::ai>(cannon_id)->enabled = false;
-                wte::mgr::world::set_component<wte::cmp::hitbox>(cannon_id)->solid = false;
-                wte::mgr::audio::sample::stop("cannon_fire");
-
-                //  Just to make sure... turn shield off
-                wte::entity_id shield_id = wte::mgr::world::get_id("shield");
-                wte::mgr::world::set_component<wte::cmp::gfx::sprite>(shield_id)->visible = false;
-                wte::mgr::world::set_component<wte::cmp::ai>(shield_id)->enabled = false;
-                wte::mgr::world::set_component<wte::cmp::hitbox>(shield_id)->solid = false;
-                wte::mgr::audio::sample::stop("shield_sound");
-
-                wte::mgr::world::set_component<wte::cmp::hitbox>(plr_id)->solid = false;
-
-                wte::mgr::audio::sample::play(wte::mgr::assets<wte::al_sample>::get<wte::al_sample>("megumin"), "once");
-                wte::mgr::variables::set<int>("lives", wte::mgr::variables::get<int>("lives") - 1);
-                wte::mgr::world::set_component<wte::cmp::motion>(plr_id)->x_vel = 0.0f;
-                wte::mgr::world::set_component<wte::cmp::motion>(plr_id)->y_vel = 0.0f;
-                wte::mgr::world::set_component<wte::cmp::gfx::sprite>(plr_id)->set_cycle("death");
-                if(wte::mgr::variables::get<int>("lives") == 0) {
-                    //  Game over!
-                    wte::mgr::messages::add(wte::message(wte::engine_time::check() + 180, "system", "end-game", ""));
-                    wte::entity_id go_id = wte::mgr::world::get_id("game_over_overlay");
-                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(go_id)->visible = true;
-                } else {
-                    std::string player_name = wte::mgr::world::get_name(plr_id);
-                    wte::mgr::messages::add(
-                        wte::message(wte::engine_time::check() + 120, "entities", player_name, player_name, "reset", "")
-                    );
-                }
-            }
-
-            //  Reset player.
-            if(msg.get_cmd() == "reset") {
-                config::flags::input_enabled = true;
-                player_pols::reset();
-                wte::mgr::world::set_component<wte::cmp::motion>(plr_id)->x_vel = 0.0f;
-                wte::mgr::world::set_component<wte::cmp::motion>(plr_id)->y_vel = 0.0f;
-                wte::mgr::world::set_component<wte::cmp::location>(plr_id)->pos_x = (float)((config::gfx::arena_w / 2) - 5);
-                wte::mgr::world::set_component<wte::cmp::location>(plr_id)->pos_y = (float)(config::gfx::arena_h - 40);
-                wte::mgr::world::set_component<health>(plr_id)->hp = wte::mgr::world::get_component<health>(plr_id)->hp_max;
-                wte::mgr::world::set_component<wte::cmp::ai>(plr_id)->enabled = true;
-                wte::mgr::world::set_component<wte::cmp::gfx::sprite>(plr_id)->set_cycle("main");
-                wte::mgr::world::set_component<wte::cmp::hitbox>(plr_id)->solid = true;
-            }
-
-            //  Take damage.
-            if(msg.get_cmd() == "damage") {
-                wte::mgr::world::set_component<health>(plr_id)->hp -= std::stoi(msg.get_arg(0));
-            }
-        }
-    );  //  End player message processing.
-
-    /* ********************************* */
-    /* *** Main cannon entity ********** */
-    /* ********************************* */
-    e_id = wte::mgr::world::new_entity();
-    wte::mgr::world::set_name(e_id, "main_cannon");
-    wte::mgr::world::add_component<wte::cmp::location>(e_id, 0, 0);
-    wte::mgr::world::add_component<wte::cmp::hitbox>(e_id, 10, 200, 0, false);
-    wte::mgr::world::set_component<wte::cmp::hitbox>(e_id)->solid = false;
-    wte::mgr::world::add_component<damage>(e_id, 3);
-
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("cannon", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("cannon")->load("cannon.png");
-    wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("cannon"),
-                                           layer::player, 10.0f, 200.0f, 0.0f, 0.0f, 2);
-    wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("main", 0, 3);
-    wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->set_cycle("main");
-    wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->visible = false;
-
-    //  Cannon logic.
-    wte::mgr::world::add_component<wte::cmp::ai>(e_id,
-        [](const wte::entity_id& can_id) {
-            wte::entity_id player_entity = wte::mgr::world::get_id("player");
-            //  Set the cannon's location to match the player.
-            wte::mgr::world::set_component<wte::cmp::location>(can_id)->pos_x =
-                wte::mgr::world::get_component<wte::cmp::location>(player_entity)->pos_x;
-            wte::mgr::world::set_component<wte::cmp::location>(can_id)->pos_y =
-                wte::mgr::world::get_component<wte::cmp::location>(player_entity)->pos_y -
-                wte::mgr::world::get_component<wte::cmp::hitbox>(can_id)->height;
-        }
-    );  //  End cannon logic.
-    wte::mgr::world::set_component<wte::cmp::ai>(e_id)->enabled = false;
-
-    //  Cannon message processing.
-    wte::mgr::world::add_component<wte::cmp::dispatcher>(e_id,
-        [](const wte::entity_id& can_id, const wte::message& msg) {
-            if(msg.get_cmd() == "colision") {
-                //  Deal damage
-                wte::mgr::messages::add(wte::message("entities", msg.get_from(), msg.get_to(),
-                    "damage", std::to_string(wte::mgr::world::get_component<damage>(can_id)->dmg)));
-            }
-        }
-    );  //  End cannon message processing.
-
-    /* ********************************* */
-    /* *** Shield entity *************** */
-    /* ********************************* */
-    e_id = wte::mgr::world::new_entity();
-    wte::mgr::world::set_name(e_id, "shield");
-    wte::mgr::world::add_component<wte::cmp::location>(e_id, 0, 0);
-    wte::mgr::world::add_component<wte::cmp::hitbox>(e_id, 64, 64, 0, false);
-    wte::mgr::world::set_component<wte::cmp::hitbox>(e_id)->solid = false;
-    wte::mgr::world::add_component<energy>(e_id, 50, 100);
-    wte::mgr::world::add_component<damage>(e_id, 100);
-
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("shield", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("shield")->load("shield.png");
-    wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("shield"),
-                                           layer::player, 64.0f, 64.0f, 0.0f, 0.0f, 6);
-    wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("main", 0, 5);
-    wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->set_cycle("main");
-    wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->visible = false;
-
-    //  Shield logic.
-    wte::mgr::world::add_component<wte::cmp::ai>(e_id,
-        //  Enabeled AI.
-        [](const wte::entity_id& shd_id) {
-            wte::entity_id player_entity = wte::mgr::world::get_id("player");
-            //  Set the shield's location to match the player.
-            wte::mgr::world::set_component<wte::cmp::location>(shd_id)->pos_x =
-                wte::mgr::world::get_component<wte::cmp::location>(player_entity)->pos_x - 28.0f;
-            wte::mgr::world::set_component<wte::cmp::location>(shd_id)->pos_y =
-                wte::mgr::world::get_component<wte::cmp::location>(player_entity)->pos_y - 16.0f;
-
-            //  Drain the shield.
-            if(wte::mgr::world::set_component<energy>(shd_id)->amt > 0)
-                wte::mgr::world::set_component<energy>(shd_id)->amt -= 1;
-
-            if(wte::mgr::world::get_component<energy>(shd_id)->amt <= 0) {
-                //  Disable shield.
-                wte::mgr::world::set_component<wte::cmp::gfx::sprite>(shd_id)->visible = false;
-                wte::mgr::world::set_component<wte::cmp::ai>(shd_id)->enabled = false;
-                wte::mgr::world::set_component<wte::cmp::hitbox>(player_entity)->solid = true;
-                //  Stop sound effect.
-                wte::mgr::audio::sample::stop("shield_sound");
-            }
-        },
-        //  Disabeled AI.
-        [](const wte::entity_id& shd_id) {
-            //  Recharge the shield.
-            if(wte::mgr::world::set_component<energy>(shd_id)->amt < wte::mgr::world::set_component<energy>(shd_id)->amt_max)
-                wte::mgr::world::set_component<energy>(shd_id)->amt += 1;
-        }
-    );  //  End shield logic.
-    wte::mgr::world::set_component<wte::cmp::ai>(e_id)->enabled = false;
-
-    //  Shield message processing.
-    wte::mgr::world::add_component<wte::cmp::dispatcher>(e_id,
-        [](const wte::entity_id& shd_id, const wte::message& msg) {
-            if(msg.get_cmd() == "colision") {
-                //  Deal damage
-                wte::mgr::messages::add(wte::message("entities", msg.get_from(), msg.get_to(),
-                    "damage", std::to_string(wte::mgr::world::get_component<damage>(shd_id)->dmg)));
-            }
-        }
-    );  //  End shield message processing.
+    wte::mgr::spawner::spawn("player", {});
+    wte::mgr::spawner::spawn("main_cannon", {});
+    wte::mgr::spawner::spawn("shield", {});
 
     //  Reset score.
     wte::mgr::variables::set("score", 0);
