@@ -184,6 +184,13 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("asteroid", wte::al_bitmap());
     wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("asteroid")->load("asteroid.png");
 
+    //  Load music for the demo into the asset manager.
+    wte::mgr::assets<wte::al_audio>::load<wte::al_audio>("music", wte::al_audio("music.ogg"));
+    //  Load some samples in the asset manager.
+    wte::mgr::assets<wte::al_sample>::load<wte::al_sample>("laser", wte::al_sample("sfx/laser.wav"));
+    wte::mgr::assets<wte::al_sample>::load<wte::al_sample>("shield", wte::al_sample("sfx/shield.wav"));
+    wte::mgr::assets<wte::al_sample>::load<wte::al_sample>("megumin", wte::al_sample("sfx/megumin.wav"));
+
     /* **************************************************** */
     /* *** ENTITY CREATION ******************************** */
     /* **************************************************** */
@@ -645,13 +652,6 @@ void wte_demo::new_game(void) {
             }
         }
     );  //  End shield message processing.
-
-    //  Load music for the demo into the asset manager.
-    wte::mgr::assets<wte::al_audio>::load<wte::al_audio>("music", wte::al_audio("music.ogg"));
-    //  Load some samples in the asset manager.
-    wte::mgr::assets<wte::al_sample>::load<wte::al_sample>("laser", wte::al_sample("sfx/laser.wav"));
-    wte::mgr::assets<wte::al_sample>::load<wte::al_sample>("shield", wte::al_sample("sfx/shield.wav"));
-    wte::mgr::assets<wte::al_sample>::load<wte::al_sample>("megumin", wte::al_sample("sfx/megumin.wav"));
 
     //  Reset score.
     wte::mgr::variables::set("score", 0);
