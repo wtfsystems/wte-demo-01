@@ -184,6 +184,10 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("asteroid", wte::al_bitmap());
     wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("asteroid")->load("asteroid.png");
 
+    /* **************************************************** */
+    /* *** ENTITY CREATION ******************************** */
+    /* **************************************************** */
+
     /* ********************************* */
     /* *** Background entity *********** */
     /* ********************************* */
@@ -400,9 +404,9 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             );  //  End asteroid message dispatching.
         }  //  End asteroid spawner function.
     );
-    /* ********************************* */
-    /* *** End entity creation ********* */
-    /* ********************************* */
+    /* **************************************************** */
+    /* *** END ENTITY CREATION **************************** */
+    /* **************************************************** */
 }
 
 /*
