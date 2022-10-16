@@ -677,7 +677,7 @@ void wte_demo::end_game(void) {
 /*
  * On menu open.
  */
-void wte_demo::on_menu_open(void) {
+void wte_demo::on_engine_pause(void) {
     wte::mgr::audio::music::a::pause();
     wte::mgr::audio::ambiance::pause();
 }
@@ -685,7 +685,7 @@ void wte_demo::on_menu_open(void) {
 /*
  * On menu close.
  */
-void wte_demo::on_menu_close(void) {
+void wte_demo::on_engine_unpause(void) {
     wte::mgr::audio::music::a::unpause();
     wte::mgr::audio::ambiance::unpause();
 }

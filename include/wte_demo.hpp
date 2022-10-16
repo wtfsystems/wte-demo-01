@@ -39,9 +39,9 @@ class wte_demo final : public wte::engine {
         //  Define what happens at the end of a game
         void end_game(void) override;
         //  On menu open
-        void on_menu_open(void) override;
+        void on_engine_pause(void) override;
         //  On menu close
-        void on_menu_close(void) override;
+        void on_engine_unpause(void) override;
 };
 
 #endif
