@@ -23,6 +23,14 @@ int main(int argc, char **argv) {
     //  Set the size of the play area.
     wte::mgr::gfx::renderer::set_arena_size(768, 1024);
 
+    //  Set key bindings
+    wte::config::controls::p1_key_up = WTE_KEY_W;
+    wte::config::controls::p1_key_down = WTE_KEY_S;
+    wte::config::controls::p1_key_left = WTE_KEY_A;
+    wte::config::controls::p1_key_right = WTE_KEY_D;
+    wte::config::controls::p1_key_action1 = WTE_KEY_RCTRL;
+    wte::config::controls::p1_key_action2 = WTE_KEY_ALTGR;
+
     //  Load settings.
     wte::config::load();
 
