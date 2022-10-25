@@ -20,6 +20,8 @@ int main(int argc, char **argv) {
     //  Set the title screen.
     wte::mgr::gfx::renderer::set_title_screen("title.bmp");
 
+    //  Set the size of the screen.
+    wte::display::set_screen_size(768, 1024);
     //  Set the size of the play area.
     wte::mgr::gfx::renderer::set_arena_size(768, 1024);
 
