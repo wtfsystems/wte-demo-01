@@ -112,6 +112,14 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 wte::mgr::audio::sample::play(wte::mgr::assets<wte::al_sample>::get<wte::al_sample>("shield"), "shield_sound");
             }
         }
+
+        if(key == config::controls::key_menu) {
+            if(config::flags::engine_paused) {
+                engine::unpause();
+            } else {
+                engine::pause();
+            }
+        }
     });
 
     wte::add_handler<wte::GAME_HANDLES, wte::EVENT_KEY_UP, wte::handler::key>([](const int& key, ALLEGRO_DISPLAY* display) {
@@ -262,7 +270,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                         }
                     }  //  End starfield message processing.
                 );  //  End dispatcher component.
-    });
+        }
+    );
 
     /* ********************************* */
     /* *** Score overlay entity ******** */
@@ -284,7 +293,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                     wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text(std::to_string(wte::mgr::variables::get<int>("hiscore")), WTE_COLOR_WHITE, 110, 10, ALLEGRO_ALIGN_LEFT);
                 }
             );  //  End score overlay drawing.
-    });
+        }
+    );
 
     /* ********************************* */
     /* *** Player Info overlay entity ** */
@@ -306,7 +316,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                     wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("Lives:  " + std::to_string(wte::mgr::variables::get<int>("lives")), WTE_COLOR_WHITE, 200, 10, ALLEGRO_ALIGN_RIGHT);
                 }
             );  //  End info overlay drawing.
-    });
+        }
+    );
 
     /* ********************************* */
     /* *** Game Over overlay entity **** */
@@ -321,7 +332,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 [](const wte::entity_id& ovr_id) {}
             );
             wte::mgr::world::set_component<wte::cmp::gfx::overlay>(e_id)->visible = false;
-    });
+        }
+    );
 
     /* ********************************* */
     /* *** Player entity *************** */
@@ -416,7 +428,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                     }
                 }
             );  //  End player message processing.
-    });
+        }
+    );
 
     /* ********************************* */
     /* *** Main cannon entity ********** */
@@ -458,7 +471,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                     }
                 }
             );  //  End cannon message processing.
-    });
+        }
+    );
 
     /* ********************************* */
     /* *** Shield entity *************** */
@@ -520,7 +534,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                     }
                 }
             );  //  End shield message processing.
-    });
+        }
+    );
 
     /* ************************************** */
     /* Add the asteroid entity to the spawner */
