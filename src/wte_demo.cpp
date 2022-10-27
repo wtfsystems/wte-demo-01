@@ -39,7 +39,9 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui_ImplAllegro5_ProcessEvent(&event);
     };
 
-    //  Create engine variables for the game
+    /* ********************************* */
+    /* *** Game variables ************** */
+    /* ********************************* */
     wte::mgr::variables::reg<int>("score", 0);
     wte::mgr::variables::reg<int>("hiscore", 0);
     wte::mgr::variables::reg<int>("max_lives", 3);
