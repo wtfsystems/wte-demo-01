@@ -57,6 +57,7 @@ find_package(PkgConfig REQUIRED)
 #  Check for OpenGL
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
+#  Check for Dear ImGui
 find_package(imgui REQUIRED)
 
 ########################################
