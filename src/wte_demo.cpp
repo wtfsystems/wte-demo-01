@@ -14,6 +14,9 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_acodec.h>
 
+#include <imgui.h>
+//#include <imgui/imgui_impl_allegro5.h>
+
 #include <wte_demo.hpp>
 #include <my_components.hpp>
 
@@ -25,6 +28,17 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     //  Init Allegro addons that the engine does not use.
     al_init_primitives_addon();
     al_init_acodec_addon();
+
+    //  Setup Dear ImGui
+    //IMGUI_CHECKVERSION();
+    //ImGui::CreateContext();
+    //ImGuiIO& io = ImGui::GetIO(); (void)io;
+    //ImGui::StyleColorsDark();
+    //ImGui_ImplAllegro5_Init(display::_display);
+
+    input::custom_input_events = [](const ALLEGRO_EVENT& event){
+        //ImGui_ImplAllegro5_ProcessEvent(&event);
+    };
 
     //  Create engine variables for the game
     wte::mgr::variables::reg<int>("score", 0);
