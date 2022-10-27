@@ -9,16 +9,7 @@
  * This extends the engine object to define a custom game.
  */
 
-#include <numeric>
-
-#include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_acodec.h>
-
-#include <imgui.h>
-#include <imgui_impl_allegro5.h>
-
 #include <wte_demo.hpp>
-#include <my_components.hpp>
 
 /*
  * Game's constructor.

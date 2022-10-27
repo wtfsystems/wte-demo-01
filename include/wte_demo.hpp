@@ -11,7 +11,17 @@
 #ifndef WTEDEMO_WTE_DEMO_HPP
 #define WTEDEMO_WTE_DEMO_HPP
 
+#include <numeric>
+
+#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_acodec.h>
+
+#include <imgui.h>
+#include <imgui_impl_allegro5.h>
+
 #include <wtengine/wtengine.hpp>
+
+#include <my_components.hpp>
 
 namespace layer {
     inline const std::size_t background = 0;
