@@ -115,9 +115,9 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
 
         if(key == config::controls::key_menu) {
             if(config::flags::engine_paused) {
-                engine::unpause();
+                config::flags::engine_paused = false;
             } else {
-                engine::pause();
+                config::flags::engine_paused = true;
             }
         }
     });
