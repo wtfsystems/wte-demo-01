@@ -657,6 +657,10 @@ wte_demo::~wte_demo() {
     wte::mgr::variables::save<int>("max_lives");
     wte::mgr::variables::save<int>("hiscore");
 
+    //  Shut down Dear ImGui
+    //ImGui_ImplAllegro5_Shutdown();
+    //ImGui::DestroyContext();
+    
     al_shutdown_primitives_addon();
 }
 
@@ -701,6 +705,27 @@ void wte_demo::new_game(void) {
 void wte_demo::end_game(void) {
     if(wte::mgr::variables::get<int>("score") > wte::mgr::variables::get<int>("hiscore"))
         wte::mgr::variables::set("hiscore", wte::mgr::variables::get<int>("score"));
+}
+
+/*
+ *
+ */
+void wte_demo::pre_resize_display(void) {
+    //ImGui_ImplAllegro5_InvalidateDeviceObjects();
+}
+
+/*
+ *
+ */
+void wte_demo::post_resize_display(void) {
+    //ImGui_ImplAllegro5_CreateDeviceObjects();
+}
+
+/*
+ *
+ */
+void wte_demo::default_state(void) {
+    //
 }
 
 /*
