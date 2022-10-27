@@ -14,7 +14,7 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_acodec.h>
 
-#include <imgui.h>
+//#include <imgui.h>
 //#include <imgui/imgui_impl_allegro5.h>
 
 #include <wte_demo.hpp>
