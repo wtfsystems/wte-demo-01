@@ -27,6 +27,14 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     ImGui::StyleColorsDark();
     ImGui_ImplAllegro5_Init(display::_display);
 
+    ImGui_ImplAllegro5_NewFrame();
+    ImGui::NewFrame();
+
+    wte::mgr::gfx::renderer::render_gui = []() {
+        ImGui::Render();
+        ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
+    };
+
     input::custom_input_events = [](ALLEGRO_EVENT& event){
         ImGui_ImplAllegro5_ProcessEvent(&event);
     };
