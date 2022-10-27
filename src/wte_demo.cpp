@@ -14,8 +14,8 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_acodec.h>
 
-//#include <imgui.h>
-//#include <imgui/imgui_impl_allegro5.h>
+#include <imgui.h>
+#include <imgui_impl_allegro5.h>
 
 #include <wte_demo.hpp>
 #include <my_components.hpp>
@@ -30,14 +30,14 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     al_init_acodec_addon();
 
     //  Setup Dear ImGui
-    //IMGUI_CHECKVERSION();
-    //ImGui::CreateContext();
-    //ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //ImGui::StyleColorsDark();
-    //ImGui_ImplAllegro5_Init(display::_display);
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplAllegro5_Init(display::_display);
 
-    input::custom_input_events = [](const ALLEGRO_EVENT& event){
-        //ImGui_ImplAllegro5_ProcessEvent(&event);
+    input::custom_input_events = [](ALLEGRO_EVENT& event){
+        ImGui_ImplAllegro5_ProcessEvent(&event);
     };
 
     //  Create engine variables for the game
@@ -658,8 +658,8 @@ wte_demo::~wte_demo() {
     wte::mgr::variables::save<int>("hiscore");
 
     //  Shut down Dear ImGui
-    //ImGui_ImplAllegro5_Shutdown();
-    //ImGui::DestroyContext();
+    ImGui_ImplAllegro5_Shutdown();
+    ImGui::DestroyContext();
     
     al_shutdown_primitives_addon();
 }
@@ -711,14 +711,14 @@ void wte_demo::end_game(void) {
  *
  */
 void wte_demo::pre_resize_display(void) {
-    //ImGui_ImplAllegro5_InvalidateDeviceObjects();
+    ImGui_ImplAllegro5_InvalidateDeviceObjects();
 }
 
 /*
  *
  */
 void wte_demo::post_resize_display(void) {
-    //ImGui_ImplAllegro5_CreateDeviceObjects();
+    ImGui_ImplAllegro5_CreateDeviceObjects();
 }
 
 /*
