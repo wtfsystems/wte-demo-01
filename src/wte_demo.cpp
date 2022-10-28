@@ -35,7 +35,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
     };
 
-    input::custom_input_events = [](ALLEGRO_EVENT& event){
+    input::custom_input_events = [](ALLEGRO_EVENT event){
         ImGui_ImplAllegro5_ProcessEvent(&event);
     };
 
@@ -726,7 +726,9 @@ void wte_demo::post_resize_display(void) {
  *
  */
 void wte_demo::default_state(void) {
-    //
+    //ImGui::Begin("Hello, world!");
+    //ImGui::Text("This is some useful text.");
+    //ImGui::End();
 }
 
 /*
