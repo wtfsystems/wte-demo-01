@@ -107,8 +107,12 @@ target_link_libraries(wte_demo PUBLIC
     ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
 
 #  Set the build target
+set_target_properties(wte_demo PROPERTIES LINK_SEARCH_START_STATIC 1)
+set_target_properties(wte_demo PROPERTIES LINK_SEARCH_END_STATIC 1)
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 set_target_properties(wte_demo PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED True)
+set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 
 #  No install for the demo - Done!
