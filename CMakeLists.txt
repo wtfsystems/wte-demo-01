@@ -57,8 +57,6 @@ find_package(PkgConfig REQUIRED)
 #  Check for OpenGL
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
-#  Check for Dear ImGui
-find_package(imgui REQUIRED)
 
 ########################################
 #
@@ -66,6 +64,11 @@ find_package(imgui REQUIRED)
 #
 ########################################
 add_executable(wte_demo
+    src/imgui_draw.cpp
+    src/imgui_impl_allegro5.cpp
+    src/imgui_tables.cpp
+    src/imgui_widgets.cpp
+    src/imgui.cpp
     src/main.cpp
     src/wte_demo.cpp)
 
@@ -103,7 +106,6 @@ target_link_libraries(wte_demo PUBLIC
     PkgConfig::ALLEGRO_FONT
     PkgConfig::ALLEGRO_IMAGE
     PkgConfig::ALLEGRO_PRIMV
-    imgui::imgui
     ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
 
 #  Set the build target
