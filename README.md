@@ -4,9 +4,6 @@ Requires the following libraries to build:
 - [WTEngine](https://github.com/wtfsystems/wtengine)
 - [Allegro](https://github.com/liballeg/allegro5)
 
-Uses the following library built in:
-- [Dear ImGui](https://github.com/ocornut/imgui)
-
 ---
 
 To build, run from here:
