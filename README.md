@@ -21,3 +21,4 @@ make
  - W A S D - move
  - Right Alt - shield
  - Right Ctrl - laser
+ - ESC - pause
