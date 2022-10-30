@@ -7,11 +7,15 @@ Requires the following libraries to build:
 Uses the following library built in:
 - [Dear ImGui](https://github.com/ocornut/imgui)
 
+---
+
 To build, run from here:
 ```
 cmake .
 make
 ```
+
+---
 
 ### Controls:
  - W A S D - move
