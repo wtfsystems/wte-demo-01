@@ -20,25 +20,6 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     al_init_primitives_addon();
     al_init_acodec_addon();
 
-    //  Setup Dear ImGui
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    ImGui::StyleColorsDark();
-    ImGui_ImplAllegro5_Init(display::_display);
-
-    ImGui_ImplAllegro5_NewFrame();
-    ImGui::NewFrame();
-
-    wte::mgr::gfx::renderer::render_gui = []() {
-        ImGui::Render();
-        ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
-    };
-
-    input::custom_input_events = [](ALLEGRO_EVENT event){
-        ImGui_ImplAllegro5_ProcessEvent(&event);
-    };
-
     /* ********************************* */
     /* *** Game variables ************** */
     /* ********************************* */
@@ -657,10 +638,6 @@ wte_demo::~wte_demo() {
     wte::mgr::variables::clear_save();
     wte::mgr::variables::save<int>("max_lives");
     wte::mgr::variables::save<int>("hiscore");
-
-    //  Shut down Dear ImGui
-    ImGui_ImplAllegro5_Shutdown();
-    ImGui::DestroyContext();
     
     al_shutdown_primitives_addon();
 }
@@ -706,20 +683,6 @@ void wte_demo::new_game(void) {
 void wte_demo::end_game(void) {
     if(wte::mgr::variables::get<int>("score") > wte::mgr::variables::get<int>("hiscore"))
         wte::mgr::variables::set("hiscore", wte::mgr::variables::get<int>("score"));
-}
-
-/*
- *
- */
-void wte_demo::pre_resize_display(void) {
-    ImGui_ImplAllegro5_InvalidateDeviceObjects();
-}
-
-/*
- *
- */
-void wte_demo::post_resize_display(void) {
-    ImGui_ImplAllegro5_CreateDeviceObjects();
 }
 
 /*

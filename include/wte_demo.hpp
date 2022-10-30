@@ -16,9 +16,6 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_acodec.h>
 
-#include <imgui.h>
-#include <imgui_impl_allegro5.h>
-
 #include <wtengine/wtengine.hpp>
 
 #include <my_components.hpp>
@@ -53,8 +50,6 @@ class wte_demo final : public wte::engine {
         //  On menu close
         void on_engine_unpause(void) override;
 
-        void pre_resize_display(void) override;
-        void post_resize_display(void) override;
         void default_state(void) override;
 };
 

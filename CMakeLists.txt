@@ -64,11 +64,6 @@ find_package(GLUT REQUIRED)
 #
 ########################################
 add_executable(wte_demo
-    src/imgui_draw.cpp
-    src/imgui_impl_allegro5.cpp
-    src/imgui_tables.cpp
-    src/imgui_widgets.cpp
-    src/imgui.cpp
     src/main.cpp
     src/wte_demo.cpp)
 
