@@ -20,11 +20,21 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     al_init_primitives_addon();
     al_init_acodec_addon();
 
-    /*wte::mgr::gfx::renderer::draw_gui = [](){
-        ImGui::Begin("Hello, world!");
-        ImGui::Text("This is some useful text.");
-        ImGui::End();
-    };*/
+    wte::mgr::gfx::renderer::draw_gui = [](){
+        //  Engine isn't running, render main menu
+        if(!config::flags::engine_started) {
+            ImGui_ImplAllegro5_NewFrame();
+            ImGui::NewFrame();
+            ImGui::Begin("Hello, world!");
+            ImGui::Text("This is some useful text.");
+            ImGui::End();
+            ImGui::Render();
+        }
+        //  Engine is running and paused, render menu
+        if(config::flags::engine_started && config::flags::engine_paused) {
+            //
+        }
+    };
 
     /* ********************************* */
     /* *** Game variables ************** */
