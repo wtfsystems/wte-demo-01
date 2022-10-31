@@ -25,13 +25,16 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         if(!config::flags::engine_started) {
             ImGui_ImplAllegro5_NewFrame();
             ImGui::NewFrame();
-            ImGui::Begin("Hello, world!");
-            ImGui::Text("This is some useful text.");
+            ImGui::Begin("WTEngine Demo");
+            if(ImGui::Button("New Game"))
+                wte::mgr::messages::add(wte::message("system", "new-game", "game.sdf"));
+            if(ImGui::Button("Quit"))
+                wte::mgr::messages::add(wte::message("system", "exit", ""));
             ImGui::End();
             ImGui::Render();
             ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
         }
-        //  Engine is running and paused, render menu
+        //  Engine is running and paused, render game menu
         if(config::flags::engine_started && config::flags::engine_paused) {
             ImGui_ImplAllegro5_NewFrame();
             ImGui::NewFrame();
@@ -59,7 +62,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     /* *** Input handling ************** */
     /* ********************************* */
     wte::add_handler<wte::NONGAME_HANDLES, wte::EVENT_KEY_DOWN, wte::handler::key>([](const int& key, ALLEGRO_DISPLAY* display) {
-        wte::mgr::messages::add(wte::message("system", "new-game", "game.sdf"));
+        //wte::mgr::messages::add(wte::message("system", "new-game", "game.sdf"));
     });
 
     wte::add_handler<wte::GAME_HANDLES, wte::EVENT_KEY_DOWN, wte::handler::key>([](const int& key, ALLEGRO_DISPLAY* display) {
