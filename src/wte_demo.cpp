@@ -20,6 +20,12 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     al_init_primitives_addon();
     al_init_acodec_addon();
 
+    /*wte::mgr::gfx::renderer::draw_gui = [](){
+        ImGui::Begin("Hello, world!");
+        ImGui::Text("This is some useful text.");
+        ImGui::End();
+    };*/
+
     /* ********************************* */
     /* *** Game variables ************** */
     /* ********************************* */
