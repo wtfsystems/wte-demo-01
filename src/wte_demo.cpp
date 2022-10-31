@@ -686,15 +686,6 @@ void wte_demo::end_game(void) {
 }
 
 /*
- *
- */
-void wte_demo::default_state(void) {
-    //ImGui::Begin("Hello, world!");
-    //ImGui::Text("This is some useful text.");
-    //ImGui::End();
-}
-
-/*
  * On menu open.
  */
 void wte_demo::on_engine_pause(void) {
