@@ -30,12 +30,16 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             ImGui::End();
             ImGui::Render();
             ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
-        } else {
-            //
         }
         //  Engine is running and paused, render menu
         if(config::flags::engine_started && config::flags::engine_paused) {
-            //
+            ImGui_ImplAllegro5_NewFrame();
+            ImGui::NewFrame();
+            ImGui::Begin("Hello, world!");
+            ImGui::Text("This is some useful text.");
+            ImGui::End();
+            ImGui::Render();
+            ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
         }
     };
 
