@@ -38,8 +38,9 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         if(config::flags::engine_started && config::flags::engine_paused) {
             ImGui_ImplAllegro5_NewFrame();
             ImGui::NewFrame();
-            ImGui::Begin("Hello, world!");
-            ImGui::Text("This is some useful text.");
+            ImGui::Begin("WTEngine Demo - Game Paused");
+            if(ImGui::Button("End Game"))
+                wte::mgr::messages::add(wte::message("system", "end-game", ""));
             ImGui::End();
             ImGui::Render();
             ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
