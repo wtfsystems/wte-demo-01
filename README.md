@@ -24,6 +24,6 @@ make
 
 ### Asset Information:
 - [Music](https://freesound.org/people/joshuaempyre/sounds/250856/)
-- [Laser] (https://freesound.org/people/SamsterBirdies/sounds/470903/)
-- [Explosion] (https://freesound.org/people/deleted_user_5405837/sounds/399303/)
+- [Laser](https://freesound.org/people/SamsterBirdies/sounds/470903/)
+- [Explosion](https://freesound.org/people/deleted_user_5405837/sounds/399303/)
 - [Shield](https://freesound.org/people/matucha/sounds/116037/)
