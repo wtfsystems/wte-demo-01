@@ -31,7 +31,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::SetNextWindowFocus();
         ImGui::Begin("Audio Settings", NULL,
             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-        if(ImGui::Button("Return")) menu_counter = 0;
+        if(ImGui::Button("Return", ImVec2(100.0f, 30.0f))) menu_counter = 0;
         ImGui::End();
     };
 
@@ -41,7 +41,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::SetNextWindowFocus();
         ImGui::Begin("Game Settings", NULL,
             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-        if(ImGui::Button("Return")) menu_counter = 0;
+        if(ImGui::Button("Return", ImVec2(100.0f, 30.0f))) menu_counter = 0;
         ImGui::End();
     };
 
@@ -57,11 +57,11 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 ImGui::SetNextWindowFocus();
                 ImGui::Begin("WTEngine Demo", NULL,
                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-                if(ImGui::Button("New Game"))
+                if(ImGui::Button("New Game", ImVec2(200.0f, 40.0f)))
                     wte::mgr::messages::add(wte::message("system", "new-game", "game.sdf"));
-                if(ImGui::Button("Audio Settings")) menu_counter = 1;
-                if(ImGui::Button("Game Settings")) menu_counter = 2;
-                if(ImGui::Button("Quit"))
+                if(ImGui::Button("Audio Settings", ImVec2(200.0f, 40.0f))) menu_counter = 1;
+                if(ImGui::Button("Game Settings", ImVec2(200.0f, 40.0f))) menu_counter = 2;
+                if(ImGui::Button("Quit", ImVec2(200.0f, 40.0f)))
                     wte::mgr::messages::add(wte::message("system", "exit", ""));
                 ImGui::End();
             }
@@ -83,12 +83,12 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 ImGui::SetNextWindowFocus();
                 ImGui::Begin("WTEngine Demo - Game Paused", NULL,
                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-                if(ImGui::Button("Resume Game"))
+                if(ImGui::Button("Resume Game", ImVec2(200.0f, 40.0f)))
                     config::flags::engine_paused = false;
-                if(ImGui::Button("Audio Settings")) menu_counter = 1;
-                if(ImGui::Button("End Game"))
+                if(ImGui::Button("Audio Settings", ImVec2(200.0f, 40.0f))) menu_counter = 1;
+                if(ImGui::Button("End Game", ImVec2(200.0f, 40.0f)))
                     wte::mgr::messages::add(wte::message("system", "end-game", ""));
-                if(ImGui::Button("Quit"))
+                if(ImGui::Button("Quit", ImVec2(200.0f, 40.0f)))
                     wte::mgr::messages::add(wte::message("system", "exit", ""));
                 ImGui::End();
             }
