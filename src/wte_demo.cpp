@@ -20,7 +20,11 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     al_init_primitives_addon();
     al_init_acodec_addon();
 
-    wte::mgr::gfx::renderer::draw_gui = [](){
+    /* ********************************* */
+    /* *** Dear ImGui Config *********** */
+    /* ********************************* */
+    menu_counter = 0;
+    wte::mgr::gfx::renderer::draw_gui = [this](){
         //  Engine isn't running, render main menu
         if(!config::flags::engine_started) {
             ImGui_ImplAllegro5_NewFrame();
@@ -730,6 +734,7 @@ void wte_demo::end_game(void) {
 void wte_demo::on_engine_pause(void) {
     wte::mgr::audio::music::a::pause();
     wte::mgr::audio::ambiance::pause();
+    menu_counter = 0;
 }
 
 /*
@@ -738,4 +743,5 @@ void wte_demo::on_engine_pause(void) {
 void wte_demo::on_engine_unpause(void) {
     wte::mgr::audio::music::a::unpause();
     wte::mgr::audio::ambiance::unpause();
+    menu_counter = 0;
 }

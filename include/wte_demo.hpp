@@ -49,6 +49,8 @@ class wte_demo final : public wte::engine {
         void on_engine_pause(void) override;
         //  On menu close
         void on_engine_unpause(void) override;
+
+        std::size_t menu_counter;
 };
 
 #endif
