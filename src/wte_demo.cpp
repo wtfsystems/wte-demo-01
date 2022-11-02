@@ -55,7 +55,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             ImGui_ImplAllegro5_NewFrame();
             ImGui::NewFrame();
 
-            if(menu_counter == 0) {  //  Render main menu
+            switch(menu_counter) {
+                case 0:
                 ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
                 ImGui::SetNextWindowSize(ImVec2(250.0f, 250.0f));
                 ImGui::SetNextWindowFocus();
@@ -68,10 +69,12 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 if(ImGui::Button("Quit", ImVec2(200.0f, 40.0f)))
                     wte::mgr::messages::add(wte::message("system", "exit", ""));
                 ImGui::End();
+                break;
+
+                case 1: draw_audio_opts(); break;
+                case 2: draw_game_opts(); break;
+                default: menu_counter = 0;
             }
-            else if(menu_counter == 1) draw_audio_opts();
-            else if(menu_counter == 2) draw_game_opts();
-            else menu_counter = 0;
 
             ImGui::Render();
             ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
@@ -81,7 +84,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             ImGui_ImplAllegro5_NewFrame();
             ImGui::NewFrame();
 
-            if(menu_counter == 0) {  //  Render main menu
+            switch(menu_counter) {
+                case 0:
                 ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
                 ImGui::SetNextWindowSize(ImVec2(250.0f, 250.0f));
                 ImGui::SetNextWindowFocus();
@@ -95,10 +99,12 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 if(ImGui::Button("Quit", ImVec2(200.0f, 40.0f)))
                     wte::mgr::messages::add(wte::message("system", "exit", ""));
                 ImGui::End();
+                break;
+
+                case 1: draw_audio_opts(); break;
+                case 2: draw_game_opts(); break;
+                default: menu_counter = 0;
             }
-            else if(menu_counter == 1) draw_audio_opts();
-            else if(menu_counter == 2) draw_game_opts();
-            else menu_counter = 0;
 
             ImGui::Render();
             ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
