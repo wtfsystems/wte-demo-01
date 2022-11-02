@@ -53,7 +53,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
 
             if(menu_counter == 0) {  //  Render main menu
                 ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
-                ImGui::SetNextWindowSize(ImVec2(200.0f, 200.0f));
+                ImGui::SetNextWindowSize(ImVec2(250.0f, 250.0f));
                 ImGui::SetNextWindowFocus();
                 ImGui::Begin("WTEngine Demo", NULL,
                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
