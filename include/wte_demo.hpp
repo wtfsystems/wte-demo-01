@@ -12,6 +12,7 @@
 #define WTEDEMO_WTE_DEMO_HPP
 
 #include <numeric>
+#include <functional>
 
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_acodec.h>
@@ -51,6 +52,8 @@ class wte_demo final : public wte::engine {
         void on_engine_unpause(void) override;
 
         std::size_t menu_counter;
+        std::function<void(void)> draw_audio_opts;
+        std::function<void(void)> draw_game_opts;
 };
 
 #endif

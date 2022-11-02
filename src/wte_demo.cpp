@@ -23,7 +23,28 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     /* ********************************* */
     /* *** Dear ImGui Config *********** */
     /* ********************************* */
-    menu_counter = 0;
+    menu_counter = 0;  // 0 = main menu; 1 = audio; 2 = game
+
+    draw_audio_opts = [this]() {
+        ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
+        ImGui::SetNextWindowSize(ImVec2(300.0f, 300.0f));
+        ImGui::SetNextWindowFocus();
+        ImGui::Begin("Audio Settings", NULL,
+            ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+        if(ImGui::Button("Return")) menu_counter = 0;
+        ImGui::End();
+    };
+
+    draw_game_opts = [this]() {
+        ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
+        ImGui::SetNextWindowSize(ImVec2(300.0f, 300.0f));
+        ImGui::SetNextWindowFocus();
+        ImGui::Begin("Game Settings", NULL,
+            ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+        if(ImGui::Button("Return")) menu_counter = 0;
+        ImGui::End();
+    };
+
     wte::mgr::gfx::renderer::draw_gui = [this](){
         //  Engine isn't running, render main menu
         if(!config::flags::engine_started) {
@@ -38,11 +59,16 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
                 if(ImGui::Button("New Game"))
                     wte::mgr::messages::add(wte::message("system", "new-game", "game.sdf"));
+                if(ImGui::Button("Audio Settings")) menu_counter = 1;
+                if(ImGui::Button("Game Settings")) menu_counter = 2;
                 if(ImGui::Button("Quit"))
                     wte::mgr::messages::add(wte::message("system", "exit", ""));
+                ImGui::End();
             }
+            else if(menu_counter == 1) draw_audio_opts();
+            else if(menu_counter == 2) draw_game_opts();
+            else menu_counter = 0;
 
-            ImGui::End();
             ImGui::Render();
             ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
         }
@@ -59,13 +85,17 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
                 if(ImGui::Button("Resume Game"))
                     config::flags::engine_paused = false;
+                if(ImGui::Button("Audio Settings")) menu_counter = 1;
                 if(ImGui::Button("End Game"))
                     wte::mgr::messages::add(wte::message("system", "end-game", ""));
                 if(ImGui::Button("Quit"))
                     wte::mgr::messages::add(wte::message("system", "exit", ""));
+                ImGui::End();
             }
+            else if(menu_counter == 1) draw_audio_opts();
+            else if(menu_counter == 2) draw_game_opts();
+            else menu_counter = 0;
 
-            ImGui::End();
             ImGui::Render();
             ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
         }
