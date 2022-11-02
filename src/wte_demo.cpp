@@ -34,7 +34,23 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::SetNextWindowFocus();
         ImGui::Begin("Audio Settings", NULL,
             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-        if(ImGui::Button("Return", ImVec2(100.0f, 30.0f))) menu_counter = 0;
+        static float main = config::volume::main;
+        static float music = config::volume::music;
+        static float sample = config::volume::sample;
+        ImGui::SliderFloat("Main volume", &main, 0.0f, 1.0f);
+        ImGui::SliderFloat("Music volume", &music, 0.0f, 1.0f);
+        ImGui::SliderFloat("Effects volume", &sample, 0.0f, 1.0f);
+        if(ImGui::Button("Apply", ImVec2(100.0f, 30.0f))) {
+            wte::mgr::audio::set_level(main);
+            wte::mgr::audio::music::set_level(music);
+            wte::mgr::audio::sample::set_level(sample);
+        }
+        if(ImGui::Button("Return", ImVec2(100.0f, 30.0f))) {
+            menu_counter = 0;
+            main = config::volume::main;
+            music = config::volume::music;
+            sample = config::volume::sample;
+        }
         ImGui::End();
     };
 
