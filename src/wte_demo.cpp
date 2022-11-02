@@ -27,6 +27,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     //  This is stored in the game object.
     menu_counter = 0;  // 0 = main menu; 1 = audio; 2 = game
 
+    //  Create the audio settings menu
     draw_audio_opts = [this]() {
         ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
         ImGui::SetNextWindowSize(ImVec2(300.0f, 300.0f));
@@ -37,6 +38,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::End();
     };
 
+    //  Create the game settings menu
     draw_game_opts = [this]() {
         ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
         ImGui::SetNextWindowSize(ImVec2(300.0f, 300.0f));
