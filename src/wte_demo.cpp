@@ -29,15 +29,19 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         if(!config::flags::engine_started) {
             ImGui_ImplAllegro5_NewFrame();
             ImGui::NewFrame();
-            ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
-            ImGui::SetNextWindowSize(ImVec2(200.0f, 200.0f));
-            ImGui::SetNextWindowFocus();
-            ImGui::Begin("WTEngine Demo", NULL,
-                ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-            if(ImGui::Button("New Game"))
-                wte::mgr::messages::add(wte::message("system", "new-game", "game.sdf"));
-            if(ImGui::Button("Quit"))
-                wte::mgr::messages::add(wte::message("system", "exit", ""));
+
+            if(menu_counter == 0) {  //  Render main menu
+                ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
+                ImGui::SetNextWindowSize(ImVec2(200.0f, 200.0f));
+                ImGui::SetNextWindowFocus();
+                ImGui::Begin("WTEngine Demo", NULL,
+                    ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+                if(ImGui::Button("New Game"))
+                    wte::mgr::messages::add(wte::message("system", "new-game", "game.sdf"));
+                if(ImGui::Button("Quit"))
+                    wte::mgr::messages::add(wte::message("system", "exit", ""));
+            }
+
             ImGui::End();
             ImGui::Render();
             ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
@@ -46,17 +50,21 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         if(config::flags::engine_started && config::flags::engine_paused) {
             ImGui_ImplAllegro5_NewFrame();
             ImGui::NewFrame();
-            ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
-            ImGui::SetNextWindowSize(ImVec2(250.0f, 250.0f));
-            ImGui::SetNextWindowFocus();
-            ImGui::Begin("WTEngine Demo - Game Paused", NULL,
-                ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-            if(ImGui::Button("Resume Game"))
-                config::flags::engine_paused = false;
-            if(ImGui::Button("End Game"))
-                wte::mgr::messages::add(wte::message("system", "end-game", ""));
-            if(ImGui::Button("Quit"))
-                wte::mgr::messages::add(wte::message("system", "exit", ""));
+
+            if(menu_counter == 0) {  //  Render main menu
+                ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
+                ImGui::SetNextWindowSize(ImVec2(250.0f, 250.0f));
+                ImGui::SetNextWindowFocus();
+                ImGui::Begin("WTEngine Demo - Game Paused", NULL,
+                    ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+                if(ImGui::Button("Resume Game"))
+                    config::flags::engine_paused = false;
+                if(ImGui::Button("End Game"))
+                    wte::mgr::messages::add(wte::message("system", "end-game", ""));
+                if(ImGui::Button("Quit"))
+                    wte::mgr::messages::add(wte::message("system", "exit", ""));
+            }
+
             ImGui::End();
             ImGui::Render();
             ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
