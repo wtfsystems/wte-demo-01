@@ -23,6 +23,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     /* ********************************* */
     /* *** Dear ImGui Config *********** */
     /* ********************************* */
+    //  Menu counter to track which menu we're on.
+    //  This is stored in the game object.
     menu_counter = 0;  // 0 = main menu; 1 = audio; 2 = game
 
     draw_audio_opts = [this]() {
