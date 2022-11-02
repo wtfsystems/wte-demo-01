@@ -717,6 +717,8 @@ void wte_demo::new_game(void) {
     wte::mgr::spawner::spawn("main_cannon", {});
     wte::mgr::spawner::spawn("shield", {});
 
+    menu_counter = 0;
+
     //  Reset score.
     wte::mgr::variables::set("score", 0);
 
