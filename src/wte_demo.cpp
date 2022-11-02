@@ -734,6 +734,7 @@ void wte_demo::new_game(void) {
 void wte_demo::end_game(void) {
     if(wte::mgr::variables::get<int>("score") > wte::mgr::variables::get<int>("hiscore"))
         wte::mgr::variables::set("hiscore", wte::mgr::variables::get<int>("score"));
+    menu_counter = 0;
 }
 
 /*
