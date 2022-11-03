@@ -30,21 +30,28 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     //  Create the audio settings menu
     draw_audio_opts = [this]() {
         ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
-        ImGui::SetNextWindowSize(ImVec2(300.0f, 300.0f));
+        ImGui::SetNextWindowSize(ImVec2(350.0f, 250.0f));
         ImGui::SetNextWindowFocus();
         ImGui::Begin("Audio Settings", NULL,
             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
         static float main = config::volume::main;
         static float music = config::volume::music;
         static float sample = config::volume::sample;
+        ImGui::Spacing(); ImGui::Spacing();
+        ImGui::Spacing(); ImGui::Spacing();
         ImGui::SliderFloat("Main volume", &main, 0.0f, 1.0f);
         ImGui::SliderFloat("Music volume", &music, 0.0f, 1.0f);
         ImGui::SliderFloat("Effects volume", &sample, 0.0f, 1.0f);
+        ImGui::Spacing(); ImGui::Spacing();
+        ImGui::Spacing(); ImGui::Spacing();
+        ImGui::Spacing(); ImGui::Spacing();
         if(ImGui::Button("Apply", ImVec2(100.0f, 30.0f))) {
             wte::mgr::audio::set_level(main);
             wte::mgr::audio::music::set_level(music);
             wte::mgr::audio::sample::set_level(sample);
         }
+        ImGui::SameLine();
+        ImGui::SetCursorPosX(240.0f);
         if(ImGui::Button("Return", ImVec2(100.0f, 30.0f))) {
             menu_counter = 0;
             main = config::volume::main;
@@ -61,7 +68,19 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::SetNextWindowFocus();
         ImGui::Begin("Game Settings", NULL,
             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-        if(ImGui::Button("Return", ImVec2(100.0f, 30.0f))) menu_counter = 0;
+        static int max_lives = wte::mgr::variables::get<int>("max_lives");
+        ImGui::Spacing(); ImGui::Spacing();
+        ImGui::SliderInt("Max lives", &max_lives, 3, 5);;
+        ImGui::Spacing(); ImGui::Spacing();
+        if(ImGui::Button("Apply", ImVec2(100.0f, 30.0f))) {
+            wte::mgr::variables::set<int>("max_lives", max_lives);
+        }
+        ImGui::SameLine();
+        ImGui::SetCursorPosX(190.0f);
+        if(ImGui::Button("Return", ImVec2(100.0f, 30.0f))) {
+            menu_counter = 0;
+            max_lives = wte::mgr::variables::get<int>("max_lives");
+        }
         ImGui::End();
     };
 
@@ -80,8 +99,10 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
                 if(ImGui::Button("New Game", ImVec2(200.0f, 40.0f)))
                     wte::mgr::messages::add(wte::message("system", "new-game", "game.sdf"));
-                if(ImGui::Button("Audio Settings", ImVec2(200.0f, 40.0f))) menu_counter = 1;
+                ImGui::Spacing(); ImGui::Spacing();
                 if(ImGui::Button("Game Settings", ImVec2(200.0f, 40.0f))) menu_counter = 2;
+                if(ImGui::Button("Audio Settings", ImVec2(200.0f, 40.0f))) menu_counter = 1;
+                ImGui::Spacing(); ImGui::Spacing();
                 if(ImGui::Button("Quit", ImVec2(200.0f, 40.0f)))
                     wte::mgr::messages::add(wte::message("system", "exit", ""));
                 ImGui::End();
@@ -109,9 +130,11 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
                 if(ImGui::Button("Resume Game", ImVec2(200.0f, 40.0f)))
                     config::flags::engine_paused = false;
+                ImGui::Spacing(); ImGui::Spacing();
                 if(ImGui::Button("Audio Settings", ImVec2(200.0f, 40.0f))) menu_counter = 1;
                 if(ImGui::Button("End Game", ImVec2(200.0f, 40.0f)))
                     wte::mgr::messages::add(wte::message("system", "end-game", ""));
+                ImGui::Spacing(); ImGui::Spacing();
                 if(ImGui::Button("Quit", ImVec2(200.0f, 40.0f)))
                     wte::mgr::messages::add(wte::message("system", "exit", ""));
                 ImGui::End();
