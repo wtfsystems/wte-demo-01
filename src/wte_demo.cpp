@@ -97,12 +97,17 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 ImGui::SetNextWindowFocus();
                 ImGui::Begin("WTEngine Demo", NULL,
                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+                ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+                ImGui::SetCursorPosX(25.0f);
                 if(ImGui::Button("New Game", ImVec2(200.0f, 40.0f)))
                     wte::mgr::messages::add(wte::message("system", "new-game", "game.sdf"));
                 ImGui::Spacing(); ImGui::Spacing();
+                ImGui::SetCursorPosX(25.0f);
                 if(ImGui::Button("Game Settings", ImVec2(200.0f, 40.0f))) menu_counter = 2;
+                ImGui::SetCursorPosX(25.0f);
                 if(ImGui::Button("Audio Settings", ImVec2(200.0f, 40.0f))) menu_counter = 1;
                 ImGui::Spacing(); ImGui::Spacing();
+                ImGui::SetCursorPosX(25.0f);
                 if(ImGui::Button("Quit", ImVec2(200.0f, 40.0f)))
                     wte::mgr::messages::add(wte::message("system", "exit", ""));
                 ImGui::End();
@@ -128,13 +133,18 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 ImGui::SetNextWindowFocus();
                 ImGui::Begin("WTEngine Demo - Game Paused", NULL,
                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+                ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+                ImGui::SetCursorPosX(25.0f);
                 if(ImGui::Button("Resume Game", ImVec2(200.0f, 40.0f)))
                     config::flags::engine_paused = false;
                 ImGui::Spacing(); ImGui::Spacing();
+                ImGui::SetCursorPosX(25.0f);
                 if(ImGui::Button("Audio Settings", ImVec2(200.0f, 40.0f))) menu_counter = 1;
+                ImGui::SetCursorPosX(25.0f);
                 if(ImGui::Button("End Game", ImVec2(200.0f, 40.0f)))
                     wte::mgr::messages::add(wte::message("system", "end-game", ""));
                 ImGui::Spacing(); ImGui::Spacing();
+                ImGui::SetCursorPosX(25.0f);
                 if(ImGui::Button("Quit", ImVec2(200.0f, 40.0f)))
                     wte::mgr::messages::add(wte::message("system", "exit", ""));
                 ImGui::End();
