@@ -151,7 +151,6 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 break;
 
                 case 1: draw_audio_opts(); break;
-                case 2: draw_game_opts(); break;
                 default: menu_counter = 0;
             }
 
