@@ -27,6 +27,9 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     //  This is stored in the game object.
     menu_counter = 0;  // 0 = main menu; 1 = audio; 2 = game
 
+    //  The next two functions are created in the game object.
+    //  This is just to make them reusable.
+
     //  Create the audio settings menu
     draw_audio_opts = [this]() {
         ImGui::SetNextWindowPos(
@@ -94,6 +97,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::End();
     };
 
+    //  ImGui main loop
     wte::mgr::gfx::renderer::draw_gui = [this](){
         //  Engine isn't running, render main menu
         if(!config::flags::engine_started) {
