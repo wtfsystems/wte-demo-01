@@ -83,11 +83,29 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
         static int max_lives = wte::mgr::variables::get<int>("max_lives");
         static float scale_factor = config::gfx::scale_factor;
+        const char* scale_list[] = { "50%", "75%", "100%", "150%", "200%" };
+        static int current_item = 0;
+        static int pass = 0;
+        if(pass == 0) {
+            if(scale_factor == 0.5f) current_item = 0;
+            if(scale_factor == 0.75f) current_item = 1;
+            if(scale_factor == 1.0f) current_item = 2;
+            if(scale_factor == 1.5f) current_item = 3;
+            if(scale_factor == 2.0f) current_item = 4;
+            pass++;
+        }
         ImGui::Spacing(); ImGui::Spacing();
-        ImGui::SliderInt("Max lives", &max_lives, 3, 5);;
+        ImGui::SliderInt("Max lives", &max_lives, 3, 5);
+        ImGui::Spacing(); ImGui::Spacing();
+        ImGui::ListBox("Scale factor", &current_item, scale_list, IM_ARRAYSIZE(scale_list), 5);
         ImGui::Spacing(); ImGui::Spacing();
         if(ImGui::Button("Apply", ImVec2(100.0f, 30.0f))) {
             wte::mgr::variables::set<int>("max_lives", max_lives);
+            if(current_item == 0) scale_factor = 0.5f;
+            if(current_item == 1) scale_factor = 0.75f;
+            if(current_item == 2) scale_factor = 1.0f;
+            if(current_item == 3) scale_factor = 1.5f;
+            if(current_item == 4) scale_factor = 2.0f;
             wte::display::set_scale_factor(scale_factor);
             ImGui::OpenPopup("applied_popup");
         }
@@ -99,12 +117,22 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         if(ImGui::Button("Cancel", ImVec2(100.0f, 30.0f))) {
             max_lives = wte::mgr::variables::get<int>("max_lives");
             scale_factor = config::gfx::scale_factor;
+            if(scale_factor == 0.5f) current_item = 0;
+            if(scale_factor == 0.75f) current_item = 1;
+            if(scale_factor == 1.0f) current_item = 2;
+            if(scale_factor == 1.5f) current_item = 3;
+            if(scale_factor == 2.0f) current_item = 4;
         }
         ImGui::SetCursorPosX(190.0f);
         if(ImGui::Button("Return", ImVec2(100.0f, 30.0f))) {
             menu_counter = 0;
             max_lives = wte::mgr::variables::get<int>("max_lives");
             scale_factor = config::gfx::scale_factor;
+            if(scale_factor == 0.5f) current_item = 0;
+            if(scale_factor == 0.75f) current_item = 1;
+            if(scale_factor == 1.0f) current_item = 2;
+            if(scale_factor == 1.5f) current_item = 3;
+            if(scale_factor == 2.0f) current_item = 4;
         }
         ImGui::End();
     };
