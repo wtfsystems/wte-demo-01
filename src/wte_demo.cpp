@@ -59,6 +59,11 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             ImGui::EndPopup();
         }
         ImGui::SameLine();
+        if(ImGui::Button("Cancel", ImVec2(100.0f, 30.0f))) {
+            main = config::volume::main;
+            music = config::volume::music;
+            sample = config::volume::sample;
+        }
         ImGui::SetCursorPosX(240.0f);
         if(ImGui::Button("Return", ImVec2(100.0f, 30.0f))) {
             menu_counter = 0;
@@ -89,6 +94,9 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             ImGui::EndPopup();
         }
         ImGui::SameLine();
+        if(ImGui::Button("Cancel", ImVec2(100.0f, 30.0f))) {
+            max_lives = wte::mgr::variables::get<int>("max_lives");
+        }
         ImGui::SetCursorPosX(190.0f);
         if(ImGui::Button("Return", ImVec2(100.0f, 30.0f))) {
             menu_counter = 0;
