@@ -64,6 +64,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             music = config::volume::music;
             sample = config::volume::sample;
         }
+        ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
         ImGui::SetCursorPosX(240.0f);
         if(ImGui::Button("Return", ImVec2(100.0f, 30.0f))) {
             menu_counter = 0;
@@ -82,6 +83,11 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::Begin("Game Settings", NULL,
             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
         static int max_lives = wte::mgr::variables::get<int>("max_lives");
+        static bool fullscreen = ([](){
+            if(config::gfx::display_mode == 1) return true;
+            else return false;
+        }());
+        static std::size_t display_mode;
         static float scale_factor = config::gfx::scale_factor;
         const char* scale_list[] = { "50%", "75%", "100%", "150%", "200%" };
         static int current_item = 0;
@@ -92,15 +98,23 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             else if(scale_factor == 1.0f) current_item = 2;
             else if(scale_factor == 1.5f) current_item = 3;
             else current_item = 4;
+            if(fullscreen) display_mode = 1;
+            else display_mode = 0;
             pass++;
         }
+
         ImGui::Spacing(); ImGui::Spacing();
         ImGui::SliderInt("Max lives", &max_lives, 3, 5);
         ImGui::Spacing(); ImGui::Spacing();
         ImGui::ListBox("Scale factor", &current_item, scale_list, IM_ARRAYSIZE(scale_list), 5);
         ImGui::Spacing(); ImGui::Spacing();
+        ImGui::Checkbox("Fullscreen", &fullscreen);
+        ImGui::Spacing(); ImGui::Spacing();
+
         if(ImGui::Button("Apply", ImVec2(100.0f, 30.0f))) {
             wte::mgr::variables::set<int>("max_lives", max_lives);
+            if(fullscreen) wte::display::set_display_mode(1);
+            else wte::display::set_display_mode(0);
             if(current_item == 0) scale_factor = 0.5f;
             else if(current_item == 1) scale_factor = 0.75f;
             else if(current_item == 2) scale_factor = 1.0f;
@@ -116,6 +130,10 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::SameLine();
         if(ImGui::Button("Cancel", ImVec2(100.0f, 30.0f))) {
             max_lives = wte::mgr::variables::get<int>("max_lives");
+            fullscreen = ([](){
+                if(config::gfx::display_mode == 1) return true;
+                else return false;
+            }());
             scale_factor = config::gfx::scale_factor;
             if(scale_factor == 0.5f) current_item = 0;
             else if(scale_factor == 0.75f) current_item = 1;
@@ -123,10 +141,15 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             else if(scale_factor == 1.5f) current_item = 3;
             else current_item = 4;
         }
+        ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
         ImGui::SetCursorPosX(190.0f);
         if(ImGui::Button("Return", ImVec2(100.0f, 30.0f))) {
             menu_counter = 0;
             max_lives = wte::mgr::variables::get<int>("max_lives");
+            fullscreen = ([](){
+                if(config::gfx::display_mode == 1) return true;
+                else return false;
+            }());
             scale_factor = config::gfx::scale_factor;
             if(scale_factor == 0.5f) current_item = 0;
             else if(scale_factor == 0.75f) current_item = 1;
