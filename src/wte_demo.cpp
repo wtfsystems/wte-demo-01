@@ -82,11 +82,13 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::Begin("Game Settings", NULL,
             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
         static int max_lives = wte::mgr::variables::get<int>("max_lives");
+        static float scale_factor = config::gfx::scale_factor;
         ImGui::Spacing(); ImGui::Spacing();
         ImGui::SliderInt("Max lives", &max_lives, 3, 5);;
         ImGui::Spacing(); ImGui::Spacing();
         if(ImGui::Button("Apply", ImVec2(100.0f, 30.0f))) {
             wte::mgr::variables::set<int>("max_lives", max_lives);
+            wte::display::set_scale_factor(scale_factor);
             ImGui::OpenPopup("applied_popup");
         }
         if(ImGui::BeginPopup("applied_popup")) {
@@ -96,11 +98,13 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::SameLine();
         if(ImGui::Button("Cancel", ImVec2(100.0f, 30.0f))) {
             max_lives = wte::mgr::variables::get<int>("max_lives");
+            scale_factor = config::gfx::scale_factor;
         }
         ImGui::SetCursorPosX(190.0f);
         if(ImGui::Button("Return", ImVec2(100.0f, 30.0f))) {
             menu_counter = 0;
             max_lives = wte::mgr::variables::get<int>("max_lives");
+            scale_factor = config::gfx::scale_factor;
         }
         ImGui::End();
     };
