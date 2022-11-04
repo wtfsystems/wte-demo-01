@@ -29,9 +29,9 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
 
     //  Create the audio settings menu
     draw_audio_opts = [this]() {
-        ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
+        ImGui::SetNextWindowPos(
+            ImVec2(config::gfx::screen_w / 2.0f, config::gfx::screen_h / 2.0f), 0, ImVec2(0.5f, 0.5f));
         ImGui::SetNextWindowSize(ImVec2(350.0f, 250.0f));
-        ImGui::SetNextWindowFocus();
         ImGui::Begin("Audio Settings", NULL,
             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
         static float main = config::volume::main;
@@ -49,6 +49,11 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             wte::mgr::audio::set_level(main);
             wte::mgr::audio::music::set_level(music);
             wte::mgr::audio::sample::set_level(sample);
+            ImGui::OpenPopup("applied_popup");
+        }
+        if(ImGui::BeginPopup("applied_popup")) {
+            ImGui::TextUnformatted("Audio settings applied.");
+            ImGui::EndPopup();
         }
         ImGui::SameLine();
         ImGui::SetCursorPosX(240.0f);
@@ -63,9 +68,9 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
 
     //  Create the game settings menu
     draw_game_opts = [this]() {
-        ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
+        ImGui::SetNextWindowPos(
+            ImVec2(config::gfx::screen_w / 2.0f, config::gfx::screen_h / 2.0f), 0, ImVec2(0.5f, 0.5f));
         ImGui::SetNextWindowSize(ImVec2(300.0f, 300.0f));
-        ImGui::SetNextWindowFocus();
         ImGui::Begin("Game Settings", NULL,
             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
         static int max_lives = wte::mgr::variables::get<int>("max_lives");
@@ -74,6 +79,11 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::Spacing(); ImGui::Spacing();
         if(ImGui::Button("Apply", ImVec2(100.0f, 30.0f))) {
             wte::mgr::variables::set<int>("max_lives", max_lives);
+            ImGui::OpenPopup("applied_popup");
+        }
+        if(ImGui::BeginPopup("applied_popup")) {
+            ImGui::TextUnformatted("Settings applied.");
+            ImGui::EndPopup();
         }
         ImGui::SameLine();
         ImGui::SetCursorPosX(190.0f);
@@ -92,9 +102,10 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
 
             switch(menu_counter) {
                 case 0:
-                ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
+                ImGui::SetNextWindowPos(
+                    ImVec2(config::gfx::screen_w / 2.0f, config::gfx::screen_h / 2.0f),
+                    0, ImVec2(0.5f, 0.5f));
                 ImGui::SetNextWindowSize(ImVec2(250.0f, 250.0f));
-                ImGui::SetNextWindowFocus();
                 ImGui::Begin("WTEngine Demo", NULL,
                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
                 ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
@@ -128,9 +139,10 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
 
             switch(menu_counter) {
                 case 0:
-                ImGui::SetNextWindowPos(ImVec2(384.0f, 512.0f), 0, ImVec2(0.5f, 0.5f));
+                ImGui::SetNextWindowPos(
+                    ImVec2(config::gfx::screen_w / 2.0f, config::gfx::screen_h / 2.0f),
+                    0, ImVec2(0.5f, 0.5f));
                 ImGui::SetNextWindowSize(ImVec2(250.0f, 250.0f));
-                ImGui::SetNextWindowFocus();
                 ImGui::Begin("WTEngine Demo - Game Paused", NULL,
                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
                 ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
