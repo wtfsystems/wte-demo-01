@@ -87,7 +87,6 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             if(config::gfx::display_mode == 1) return true;
             else return false;
         }());
-        static std::size_t display_mode;
         static float scale_factor = config::gfx::scale_factor;
         const char* scale_list[] = { "50%", "75%", "100%", "150%", "200%" };
         static int current_item = 0;
@@ -98,8 +97,6 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             else if(scale_factor == 1.0f) current_item = 2;
             else if(scale_factor == 1.5f) current_item = 3;
             else current_item = 4;
-            if(fullscreen) display_mode = 1;
-            else display_mode = 0;
             pass++;
         }
 
