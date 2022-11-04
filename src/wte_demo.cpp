@@ -88,10 +88,10 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         static int pass = 0;
         if(pass == 0) {
             if(scale_factor == 0.5f) current_item = 0;
-            if(scale_factor == 0.75f) current_item = 1;
-            if(scale_factor == 1.0f) current_item = 2;
-            if(scale_factor == 1.5f) current_item = 3;
-            if(scale_factor == 2.0f) current_item = 4;
+            else if(scale_factor == 0.75f) current_item = 1;
+            else if(scale_factor == 1.0f) current_item = 2;
+            else if(scale_factor == 1.5f) current_item = 3;
+            else current_item = 4;
             pass++;
         }
         ImGui::Spacing(); ImGui::Spacing();
@@ -102,10 +102,10 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         if(ImGui::Button("Apply", ImVec2(100.0f, 30.0f))) {
             wte::mgr::variables::set<int>("max_lives", max_lives);
             if(current_item == 0) scale_factor = 0.5f;
-            if(current_item == 1) scale_factor = 0.75f;
-            if(current_item == 2) scale_factor = 1.0f;
-            if(current_item == 3) scale_factor = 1.5f;
-            if(current_item == 4) scale_factor = 2.0f;
+            else if(current_item == 1) scale_factor = 0.75f;
+            else if(current_item == 2) scale_factor = 1.0f;
+            else if(current_item == 3) scale_factor = 1.5f;
+            else scale_factor = 2.0f;
             wte::display::set_scale_factor(scale_factor);
             ImGui::OpenPopup("applied_popup");
         }
@@ -118,10 +118,10 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             max_lives = wte::mgr::variables::get<int>("max_lives");
             scale_factor = config::gfx::scale_factor;
             if(scale_factor == 0.5f) current_item = 0;
-            if(scale_factor == 0.75f) current_item = 1;
-            if(scale_factor == 1.0f) current_item = 2;
-            if(scale_factor == 1.5f) current_item = 3;
-            if(scale_factor == 2.0f) current_item = 4;
+            else if(scale_factor == 0.75f) current_item = 1;
+            else if(scale_factor == 1.0f) current_item = 2;
+            else if(scale_factor == 1.5f) current_item = 3;
+            else current_item = 4;
         }
         ImGui::SetCursorPosX(190.0f);
         if(ImGui::Button("Return", ImVec2(100.0f, 30.0f))) {
@@ -129,10 +129,10 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             max_lives = wte::mgr::variables::get<int>("max_lives");
             scale_factor = config::gfx::scale_factor;
             if(scale_factor == 0.5f) current_item = 0;
-            if(scale_factor == 0.75f) current_item = 1;
-            if(scale_factor == 1.0f) current_item = 2;
-            if(scale_factor == 1.5f) current_item = 3;
-            if(scale_factor == 2.0f) current_item = 4;
+            else if(scale_factor == 0.75f) current_item = 1;
+            else if(scale_factor == 1.0f) current_item = 2;
+            else if(scale_factor == 1.5f) current_item = 3;
+            else current_item = 4;
         }
         ImGui::End();
     };
