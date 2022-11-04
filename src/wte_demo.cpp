@@ -108,7 +108,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::Spacing(); ImGui::Spacing();
         ImGui::ListBox("Scale factor", &current_item, scale_list, IM_ARRAYSIZE(scale_list), 5);
         ImGui::Spacing(); ImGui::Spacing();
-        ImGui::Checkbox("Fullscreen", &fullscreen);
+        ImGui::Checkbox("Fullscreen (requires restart)", &fullscreen);
         ImGui::Spacing(); ImGui::Spacing();
 
         if(ImGui::Button("Apply", ImVec2(100.0f, 30.0f))) {
