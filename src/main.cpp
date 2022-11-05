@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
     //  Set the size of the screen.
     wte::display::set_screen_size(768, 1024);
     //  Set the size of the play area.
-    wte::mgr::gfx::renderer::set_arena_size(768, 1024);
+    wte::mgr::gfx::renderer::set_viewport_size(768, 1024);
 
     //  Set key bindings
     wte::config::controls::p1_key_up = WTE_KEY_W;

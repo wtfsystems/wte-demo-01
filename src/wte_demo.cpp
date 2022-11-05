@@ -393,7 +393,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     /* ********************************* */
     wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>(
         "starfield",
-        wte::al_bitmap(config::gfx::arena_w, config::gfx::arena_h)
+        wte::al_bitmap(config::gfx::viewport_w, config::gfx::viewport_h)
     );
     wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("score_overlay", wte::al_bitmap(200, 20));
     wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("player_info_overlay", wte::al_bitmap(200, 20));
@@ -436,10 +436,10 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                     for(std::size_t i = 0; i < MAX_STARS; i++) {
                         wte::mgr::world::set_component<stars>(bkg_id)->y[i] +=
                             wte::mgr::world::get_component<stars>(bkg_id)->speed[i] * wte::mgr::world::get_component<stars>(bkg_id)->speed_mult;
-                        if(wte::mgr::world::get_component<stars>(bkg_id)->y[i] > config::gfx::arena_h) {
+                        if(wte::mgr::world::get_component<stars>(bkg_id)->y[i] > config::gfx::viewport_h) {
                             //  Make a new star.
                             wte::mgr::world::set_component<stars>(bkg_id)->x[i] =
-                                std::rand() % config::gfx::arena_w + 1;
+                                std::rand() % config::gfx::viewport_w + 1;
                             wte::mgr::world::set_component<stars>(bkg_id)->y[i] = 0;
                             wte::mgr::world::set_component<stars>(bkg_id)->speed[i] = (std::rand() % 3 + 1) * 3;
                             wte::mgr::world::set_component<stars>(bkg_id)->color[i] = std::rand() % 4 + 1;
@@ -472,9 +472,9 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
 
                             for(std::size_t i = 0; i < MAX_STARS; i++) {
                                 wte::mgr::world::set_component<stars>(bkg_id)->x[i] =
-                                    std::rand() % config::gfx::arena_w + 1;
+                                    std::rand() % config::gfx::viewport_w + 1;
                                 wte::mgr::world::set_component<stars>(bkg_id)->y[i] =
-                                    std::rand() % config::gfx::arena_h + 1;
+                                    std::rand() % config::gfx::viewport_h + 1;
                                 wte::mgr::world::set_component<stars>(bkg_id)->speed[i] = (std::rand() % 3 + 1) * 3;
                                 wte::mgr::world::set_component<stars>(bkg_id)->color[i] = std::rand() % 4 + 1;
                             }
@@ -493,7 +493,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
                 wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("score_overlay"),
                 wte::mgr::assets<wte::al_font>::get<wte::al_font>("wte_default_font"),
-                layer::overlay, config::gfx::arena_h - 20, 0,
+                layer::overlay, config::gfx::viewport_h - 20, 0,
                 [](const wte::entity_id& ovr_id) {
                     //  Define what gets displayed on the overlay.
                     wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->set_drawing();
@@ -516,7 +516,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
                 wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("player_info_overlay"),
                 wte::mgr::assets<wte::al_font>::get<wte::al_font>("wte_default_font"), layer::overlay,
-                config::gfx::arena_w - 200, config::gfx::arena_h - 20,
+                config::gfx::viewport_w - 200, config::gfx::viewport_h - 20,
                 [](const wte::entity_id& ovr_id) {
                     //  Define what gets displayed on the overlay.
                     wte::entity_id shd_id = wte::mgr::world::get_id("shield");
@@ -539,7 +539,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
                 wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("game_over_overlay"),
                 wte::mgr::assets<wte::al_font>::get<wte::al_font>("wte_default_font"),
-                layer::overlay, (config::gfx::arena_w / 2) - 240, (config::gfx::arena_h / 2) - 66,
+                layer::overlay, (config::gfx::viewport_w / 2) - 240, (config::gfx::viewport_h / 2) - 66,
                 [](const wte::entity_id& ovr_id) {}
             );
             wte::mgr::world::set_component<wte::cmp::gfx::overlay>(e_id)->visible = false;
@@ -553,12 +553,12 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         [](const wte::entity_id& e_id, const wte::msg_args& args) {
             wte::mgr::world::set_name(e_id, "player");
             wte::mgr::world::add_component<wte::cmp::location>(e_id,
-                (config::gfx::arena_w / 2) - 5,
-                config::gfx::arena_h - 40);
+                (config::gfx::viewport_w / 2) - 5,
+                config::gfx::viewport_h - 40);
             wte::mgr::world::add_component<wte::cmp::hitbox>(e_id, 10, 10, 0);
             wte::mgr::world::add_component<wte::cmp::bounding_box>(e_id, 12.0f, 0.0f,
-                (float)(config::gfx::arena_w - 21),
-                (float)(config::gfx::arena_h - 32));
+                (float)(config::gfx::viewport_w - 21),
+                (float)(config::gfx::viewport_h - 32));
             wte::mgr::world::add_component<health>(e_id, 1, 1);
             wte::mgr::world::add_component<wte::cmp::motion>(e_id, 0.0f, 0.0f, 0.0f);
             wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("ship"),
@@ -625,8 +625,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                         player_pols::reset();
                         wte::mgr::world::set_component<wte::cmp::motion>(plr_id)->x_vel = 0.0f;
                         wte::mgr::world::set_component<wte::cmp::motion>(plr_id)->y_vel = 0.0f;
-                        wte::mgr::world::set_component<wte::cmp::location>(plr_id)->pos_x = (float)((config::gfx::arena_w / 2) - 5);
-                        wte::mgr::world::set_component<wte::cmp::location>(plr_id)->pos_y = (float)(config::gfx::arena_h - 40);
+                        wte::mgr::world::set_component<wte::cmp::location>(plr_id)->pos_x = (float)((config::gfx::viewport_w / 2) - 5);
+                        wte::mgr::world::set_component<wte::cmp::location>(plr_id)->pos_y = (float)(config::gfx::viewport_h - 40);
                         wte::mgr::world::set_component<health>(plr_id)->hp = wte::mgr::world::get_component<health>(plr_id)->hp_max;
                         wte::mgr::world::set_component<wte::cmp::ai>(plr_id)->enabled = true;
                         wte::mgr::world::set_component<wte::cmp::gfx::sprite>(plr_id)->set_cycle("main");
@@ -788,7 +788,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 [](const wte::entity_id& ast_id) {
                     //  AI for asteroids defined here.
                     //  Perform OOB check.
-                    if(wte::mgr::world::get_component<wte::cmp::location>(ast_id)->pos_y > (float)(config::gfx::arena_h + 100)) {
+                    if(wte::mgr::world::get_component<wte::cmp::location>(ast_id)->pos_y > (float)(config::gfx::viewport_h + 100)) {
                         wte::mgr::messages::add(wte::message("spawner", "delete", wte::mgr::world::get_name(ast_id)));
                     }
 
