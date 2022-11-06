@@ -88,22 +88,27 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             else return false;
         }());
         static float scale_factor = config::gfx::scale_factor;
-        const char* scale_list[] = { "50%", "75%", "100%", "150%", "200%" };
-        static int current_item = 0;
+        static const char* scale_list[] = { "50%", "75%", "100%", "150%", "200%" };
+        static int current_scale_item = 0;
+        static wte::display_results resolutions = wte::display::get_available_res();
+        const char* res_list[] = {};
+        for(std::size_t i = 0; i < resolutions.size(); i++) {
+            res_list[i] = resolutions[i].label.c_str();
+        }
         static int pass = 0;
         if(pass == 0) {
-            if(scale_factor == 0.5f) current_item = 0;
-            else if(scale_factor == 0.75f) current_item = 1;
-            else if(scale_factor == 1.0f) current_item = 2;
-            else if(scale_factor == 1.5f) current_item = 3;
-            else current_item = 4;
+            if(scale_factor == 0.5f) current_scale_item = 0;
+            else if(scale_factor == 0.75f) current_scale_item = 1;
+            else if(scale_factor == 1.0f) current_scale_item = 2;
+            else if(scale_factor == 1.5f) current_scale_item = 3;
+            else current_scale_item = 4;
             pass++;
         }
 
         ImGui::Spacing(); ImGui::Spacing();
         ImGui::SliderInt("Max lives", &max_lives, 3, 5);
         ImGui::Spacing(); ImGui::Spacing();
-        ImGui::ListBox("Scale factor", &current_item, scale_list, IM_ARRAYSIZE(scale_list), 5);
+        ImGui::ListBox("Scale factor", &current_scale_item, scale_list, IM_ARRAYSIZE(scale_list), 5);
         ImGui::Spacing(); ImGui::Spacing();
         ImGui::Checkbox("Fullscreen (requires restart)", &fullscreen);
         ImGui::Spacing(); ImGui::Spacing();
@@ -112,10 +117,10 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             wte::mgr::variables::set<int>("max_lives", max_lives);
             if(fullscreen) wte::display::set_display_mode(1);
             else wte::display::set_display_mode(0);
-            if(current_item == 0) scale_factor = 0.5f;
-            else if(current_item == 1) scale_factor = 0.75f;
-            else if(current_item == 2) scale_factor = 1.0f;
-            else if(current_item == 3) scale_factor = 1.5f;
+            if(current_scale_item == 0) scale_factor = 0.5f;
+            else if(current_scale_item == 1) scale_factor = 0.75f;
+            else if(current_scale_item == 2) scale_factor = 1.0f;
+            else if(current_scale_item == 3) scale_factor = 1.5f;
             else scale_factor = 2.0f;
             wte::display::set_scale_factor(scale_factor);
             ImGui::OpenPopup("applied_popup");
@@ -132,11 +137,11 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 else return false;
             }());
             scale_factor = config::gfx::scale_factor;
-            if(scale_factor == 0.5f) current_item = 0;
-            else if(scale_factor == 0.75f) current_item = 1;
-            else if(scale_factor == 1.0f) current_item = 2;
-            else if(scale_factor == 1.5f) current_item = 3;
-            else current_item = 4;
+            if(scale_factor == 0.5f) current_scale_item = 0;
+            else if(scale_factor == 0.75f) current_scale_item = 1;
+            else if(scale_factor == 1.0f) current_scale_item = 2;
+            else if(scale_factor == 1.5f) current_scale_item = 3;
+            else current_scale_item = 4;
         }
         ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
         ImGui::SetCursorPosX(190.0f);
@@ -148,11 +153,11 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 else return false;
             }());
             scale_factor = config::gfx::scale_factor;
-            if(scale_factor == 0.5f) current_item = 0;
-            else if(scale_factor == 0.75f) current_item = 1;
-            else if(scale_factor == 1.0f) current_item = 2;
-            else if(scale_factor == 1.5f) current_item = 3;
-            else current_item = 4;
+            if(scale_factor == 0.5f) current_scale_item = 0;
+            else if(scale_factor == 0.75f) current_scale_item = 1;
+            else if(scale_factor == 1.0f) current_scale_item = 2;
+            else if(scale_factor == 1.5f) current_scale_item = 3;
+            else current_scale_item = 4;
         }
         ImGui::End();
     };
