@@ -154,8 +154,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             else if(current_scale_item == 3) scale_factor = 1.5f;
             else scale_factor = 2.0f;
             wte::display::set_scale_factor(scale_factor);
-            //check if resized
-            wte::display::resize_display(screen_w, screen_h);
+            if(screen_w != config::gfx::screen_w && screen_h != config::gfx::screen_h)
+                wte::display::resize_display(screen_w, screen_h);
             ImGui::OpenPopup("applied_popup");
         }
         if(ImGui::BeginPopup("applied_popup")) {
