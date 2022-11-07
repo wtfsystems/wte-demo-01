@@ -108,7 +108,22 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::Spacing(); ImGui::Spacing();
         ImGui::SliderInt("Max lives", &max_lives, 3, 5);
         ImGui::Spacing(); ImGui::Spacing();
-        ImGui::ListBox("Scale factor", &current_scale_item, scale_list, IM_ARRAYSIZE(scale_list), 5);
+        if(ImGui::BeginListBox("Scale factor", ImVec2(95.0f, 90.0f))) {
+            for(int i = 0; i < IM_ARRAYSIZE(scale_list); i++) {
+                const bool is_selected = (current_scale_item == i);
+                if(ImGui::Selectable(scale_list[i], is_selected))
+                    current_scale_item = i;
+                if(is_selected) {
+                    if(current_scale_item == 0) scale_factor = 0.5f;
+                    else if(current_scale_item == 1) scale_factor = 0.75f;
+                    else if(current_scale_item == 2) scale_factor = 1.0f;
+                    else if(current_scale_item == 3) scale_factor = 1.5f;
+                    else scale_factor = 2.0f;
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndListBox();
+        }
         ImGui::SameLine();
         if(ImGui::BeginListBox("Reolution", ImVec2(120.0f, 90.0f))) {
             for(int i = 0; i < wte::wtf_display_modes.size(); i++) {
@@ -134,6 +149,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             else if(current_scale_item == 3) scale_factor = 1.5f;
             else scale_factor = 2.0f;
             wte::display::set_scale_factor(scale_factor);
+            //check if resized
+            //wte::display::resize_display();
             ImGui::OpenPopup("applied_popup");
         }
         if(ImGui::BeginPopup("applied_popup")) {
