@@ -17,12 +17,6 @@ int main(int argc, char **argv) {
     //  Set locations to load game data from.
     wte::engine::add_file_location("data.zip");
 
-    //  Set the title screen.
-    wte::mgr::gfx::renderer::set_title_screen("title.bmp");
-
-    //  Set the size of the play area.
-    wte::mgr::gfx::renderer::set_viewport_size(768, 1024);
-
     //  Set key bindings
     wte::config::controls::p1_key_up = WTE_KEY_W;
     wte::config::controls::p1_key_down = WTE_KEY_S;
@@ -33,6 +27,12 @@ int main(int argc, char **argv) {
 
     //  Load settings.
     wte::config::load();
+
+    //  Set the title screen.
+    wte::mgr::gfx::renderer::set_title_screen("title.bmp");
+
+    //  Set the size of the play area.
+    wte::mgr::gfx::renderer::set_viewport_size(768, 1024);
 
     //  Initialize game object.
     wte_demo my_game(argc, argv);
