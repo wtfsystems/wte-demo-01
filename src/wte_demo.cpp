@@ -130,8 +130,9 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 const bool is_selected = (current_res_item == i);
                 if(ImGui::Selectable(wte::wtf_display_modes[i].label.c_str(), is_selected))
                     current_res_item = i;
-                if(is_selected)
+                if(is_selected) {
                     ImGui::SetItemDefaultFocus();
+                }
             }
             ImGui::EndListBox();
         }
