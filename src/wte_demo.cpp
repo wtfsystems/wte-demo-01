@@ -147,7 +147,6 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             }
             ImGui::EndListBox();
         }
-        static int org_res_item = current_res_item;
         ImGui::Spacing(); ImGui::Spacing();
         ImGui::Checkbox("Fullscreen (requires restart)", &fullscreen);
         ImGui::Spacing(); ImGui::Spacing();
@@ -184,7 +183,12 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             else if(scale_factor == 1.0f) current_scale_item = 2;
             else if(scale_factor == 1.5f) current_scale_item = 3;
             else current_scale_item = 4;
-            current_res_item = org_res_item;
+            for(int i = 0; i < wte::wtf_display_modes.size(); i++) {
+                if(wte::wtf_display_modes[i].width == screen_w &&
+                   wte::wtf_display_modes[i].height == screen_h) {
+                    current_res_item = i;
+                }
+            }
         }
         ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
         ImGui::SetCursorPosX(280.0f);
