@@ -104,7 +104,12 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             else if(scale_factor == 1.0f) current_scale_item = 2;
             else if(scale_factor == 1.5f) current_scale_item = 3;
             else current_scale_item = 4;
-            //  set initial state for resolution
+            for(int i = 0; i < wte::wtf_display_modes.size(); i++) {
+                if(wte::wtf_display_modes[i].width == screen_w &&
+                   wte::wtf_display_modes[i].height == screen_h) {
+                    current_res_item = i;
+                }
+            }
             pass++;
         }
 
