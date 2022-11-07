@@ -11,6 +11,8 @@
 
 #include <wte_demo.hpp>
 
+#include <iostream>
+
 /*
  * Game's constructor.
  * Initialize game specific variables here.
@@ -79,9 +81,10 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     draw_game_opts = [this]() {
         ImGui::SetNextWindowPos(
             ImVec2(config::gfx::screen_w / 2.0f, config::gfx::screen_h / 2.0f), 0, ImVec2(0.5f, 0.5f));
-        ImGui::SetNextWindowSize(ImVec2(300.0f, 300.0f));
+        ImGui::SetNextWindowSize(ImVec2(400.0f, 300.0f));
         ImGui::Begin("Game Settings", NULL,
             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+
         static int max_lives = wte::mgr::variables::get<int>("max_lives");
         static bool fullscreen = ([](){
             if(config::gfx::display_mode == 1) return true;
@@ -90,11 +93,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         static float scale_factor = config::gfx::scale_factor;
         static const char* scale_list[] = { "50%", "75%", "100%", "150%", "200%" };
         static int current_scale_item = 0;
-        static wte::display_results resolutions = wte::display::get_available_res();
-        const char* res_list[] = {};
-        for(std::size_t i = 0; i < resolutions.size(); i++) {
-            res_list[i] = resolutions[i].label.c_str();
-        }
+        static int current_res_item = 0;
+
         static int pass = 0;
         if(pass == 0) {
             if(scale_factor == 0.5f) current_scale_item = 0;
@@ -109,6 +109,17 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::SliderInt("Max lives", &max_lives, 3, 5);
         ImGui::Spacing(); ImGui::Spacing();
         ImGui::ListBox("Scale factor", &current_scale_item, scale_list, IM_ARRAYSIZE(scale_list), 5);
+        ImGui::SameLine();
+        if(ImGui::BeginListBox("Reolution", ImVec2(120.0f, 90.0f))) {
+            for(int i = 0; i < wte::wtf_display_modes.size(); i++) {
+                const bool is_selected = (current_res_item == i);
+                if(ImGui::Selectable(wte::wtf_display_modes[i].label.c_str(), is_selected))
+                    current_res_item = i;
+                if(is_selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndListBox();
+        }
         ImGui::Spacing(); ImGui::Spacing();
         ImGui::Checkbox("Fullscreen (requires restart)", &fullscreen);
         ImGui::Spacing(); ImGui::Spacing();
