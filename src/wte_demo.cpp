@@ -90,10 +90,12 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             if(config::gfx::display_mode == 1) return true;
             else return false;
         }());
+        static int screen_w = config::gfx::screen_w;
+        static int screen_h = config::gfx::screen_h;
         static float scale_factor = config::gfx::scale_factor;
         static const char* scale_list[] = { "50%", "75%", "100%", "150%", "200%" };
-        static int current_scale_item = 0;
         static int current_res_item = 0;
+        static int current_scale_item = 0;
 
         static int pass = 0;
         if(pass == 0) {
@@ -131,6 +133,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 if(ImGui::Selectable(wte::wtf_display_modes[i].label.c_str(), is_selected))
                     current_res_item = i;
                 if(is_selected) {
+                    screen_w = wte::wtf_display_modes[i].width;
+                    screen_h = wte::wtf_display_modes[i].height;
                     ImGui::SetItemDefaultFocus();
                 }
             }
@@ -151,7 +155,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             else scale_factor = 2.0f;
             wte::display::set_scale_factor(scale_factor);
             //check if resized
-            //wte::display::resize_display();
+            wte::display::resize_display(screen_w, screen_h);
             ImGui::OpenPopup("applied_popup");
         }
         if(ImGui::BeginPopup("applied_popup")) {
