@@ -104,6 +104,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             else if(scale_factor == 1.0f) current_scale_item = 2;
             else if(scale_factor == 1.5f) current_scale_item = 3;
             else current_scale_item = 4;
+            //  set initial state for resolution
             pass++;
         }
 
@@ -140,6 +141,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             }
             ImGui::EndListBox();
         }
+        static int org_res_item = current_res_item;
         ImGui::Spacing(); ImGui::Spacing();
         ImGui::Checkbox("Fullscreen (requires restart)", &fullscreen);
         ImGui::Spacing(); ImGui::Spacing();
@@ -169,12 +171,15 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 if(config::gfx::display_mode == 1) return true;
                 else return false;
             }());
+            screen_w = config::gfx::screen_w;
+            screen_h = config::gfx::screen_h;
             scale_factor = config::gfx::scale_factor;
             if(scale_factor == 0.5f) current_scale_item = 0;
             else if(scale_factor == 0.75f) current_scale_item = 1;
             else if(scale_factor == 1.0f) current_scale_item = 2;
             else if(scale_factor == 1.5f) current_scale_item = 3;
             else current_scale_item = 4;
+            current_res_item = org_res_item;
         }
         ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
         ImGui::SetCursorPosX(190.0f);
