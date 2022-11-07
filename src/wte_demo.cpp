@@ -116,6 +116,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::Spacing(); ImGui::Spacing();
         ImGui::SliderInt("Max lives", &max_lives, 3, 5);
         ImGui::Spacing(); ImGui::Spacing();
+        ImGui::Spacing(); ImGui::Spacing();
         if(ImGui::BeginListBox("Scale factor", ImVec2(95.0f, 90.0f))) {
             for(int i = 0; i < IM_ARRAYSIZE(scale_list); i++) {
                 const bool is_selected = (current_scale_item == i);
@@ -187,7 +188,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             current_res_item = org_res_item;
         }
         ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
-        ImGui::SetCursorPosX(190.0f);
+        ImGui::SetCursorPosX(280.0f);
         if(ImGui::Button("Return", ImVec2(100.0f, 30.0f))) {
             menu_counter = 0;
             max_lives = wte::mgr::variables::get<int>("max_lives");
