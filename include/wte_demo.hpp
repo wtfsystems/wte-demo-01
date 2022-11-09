@@ -11,6 +11,8 @@
 #ifndef WTEDEMO_WTE_DEMO_HPP
 #define WTEDEMO_WTE_DEMO_HPP
 
+#include <iomanip>
+#include <sstream>
 #include <numeric>
 #include <functional>
 

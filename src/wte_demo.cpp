@@ -93,17 +93,15 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         static int screen_w = config::gfx::screen_w;
         static int screen_h = config::gfx::screen_h;
         static float scale_factor = config::gfx::scale_factor;
-        static const char* scale_list[] = { "50%", "75%", "100%", "150%", "200%" };
+        static const float scale_list[] = { .75f, 1.0f, 1.25f, 1.5f, 2.0f };
         static int current_res_item = 0;
         static int current_scale_item = 0;
 
         static int pass = 0;
         if(pass == 0) {
-            if(scale_factor == 0.5f) current_scale_item = 0;
-            else if(scale_factor == 0.75f) current_scale_item = 1;
-            else if(scale_factor == 1.0f) current_scale_item = 2;
-            else if(scale_factor == 1.5f) current_scale_item = 3;
-            else current_scale_item = 4;
+            for(int i = 0; i < IM_ARRAYSIZE(scale_list); i++) {
+                if(config::gfx::scale_factor == i) current_scale_item = i;
+            }
             for(int i = 0; i < wte::wtf_display_modes.size(); i++) {
                 if(wte::wtf_display_modes[i].width == screen_w &&
                    wte::wtf_display_modes[i].height == screen_h) {
@@ -120,14 +118,14 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         if(ImGui::BeginListBox("Scale factor", ImVec2(95.0f, 90.0f))) {
             for(int i = 0; i < IM_ARRAYSIZE(scale_list); i++) {
                 const bool is_selected = (current_scale_item == i);
-                if(ImGui::Selectable(scale_list[i], is_selected))
+                const float cur_scale = scale_list[i] * 100;
+                std::stringstream scale_stream;
+                scale_stream << std::fixed << std::setprecision(0) << cur_scale;
+                const std::string temp_str = scale_stream.str() + "%";
+                if(ImGui::Selectable(temp_str.c_str(), is_selected))
                     current_scale_item = i;
                 if(is_selected) {
-                    if(current_scale_item == 0) scale_factor = 0.5f;
-                    else if(current_scale_item == 1) scale_factor = 0.75f;
-                    else if(current_scale_item == 2) scale_factor = 1.0f;
-                    else if(current_scale_item == 3) scale_factor = 1.5f;
-                    else scale_factor = 2.0f;
+                    scale_factor = scale_list[i];
                     ImGui::SetItemDefaultFocus();
                 }
             }
@@ -155,11 +153,6 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             wte::mgr::variables::set<int>("max_lives", max_lives);
             if(fullscreen) wte::display::set_display_mode(1);
             else wte::display::set_display_mode(0);
-            if(current_scale_item == 0) scale_factor = 0.5f;
-            else if(current_scale_item == 1) scale_factor = 0.75f;
-            else if(current_scale_item == 2) scale_factor = 1.0f;
-            else if(current_scale_item == 3) scale_factor = 1.5f;
-            else scale_factor = 2.0f;
             wte::display::set_scale_factor(scale_factor);
             wte::display::resize_display(screen_w, screen_h);
             ImGui::OpenPopup("applied_popup");
@@ -178,11 +171,10 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             screen_w = config::gfx::screen_w;
             screen_h = config::gfx::screen_h;
             scale_factor = config::gfx::scale_factor;
-            if(scale_factor == 0.5f) current_scale_item = 0;
-            else if(scale_factor == 0.75f) current_scale_item = 1;
-            else if(scale_factor == 1.0f) current_scale_item = 2;
-            else if(scale_factor == 1.5f) current_scale_item = 3;
-            else current_scale_item = 4;
+            for(int i = 0; i < IM_ARRAYSIZE(scale_list); i++) {
+                if(config::gfx::scale_factor > i - .001 &&
+                   config::gfx::scale_factor < i + .001) current_scale_item = i;
+            }
             for(int i = 0; i < wte::wtf_display_modes.size(); i++) {
                 if(wte::wtf_display_modes[i].width == screen_w &&
                    wte::wtf_display_modes[i].height == screen_h) {
@@ -200,11 +192,9 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 else return false;
             }());
             scale_factor = config::gfx::scale_factor;
-            if(scale_factor == 0.5f) current_scale_item = 0;
-            else if(scale_factor == 0.75f) current_scale_item = 1;
-            else if(scale_factor == 1.0f) current_scale_item = 2;
-            else if(scale_factor == 1.5f) current_scale_item = 3;
-            else current_scale_item = 4;
+            for(int i = 0; i < IM_ARRAYSIZE(scale_list); i++) {
+                if(config::gfx::scale_factor == i) current_scale_item = i;
+            }
         }
         ImGui::End();
     };
