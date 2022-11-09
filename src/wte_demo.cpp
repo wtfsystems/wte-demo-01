@@ -98,7 +98,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
 
         static unsigned short pass = 0;
         if(pass == 0) {
-            for(int i = 0; i < IM_ARRAYSIZE(wte::scale_factors); i++) {
+            for(int i = 0; i < wte::scale_factors.size(); i++) {
                 if(config::gfx::scale_factor == i) current_scale_item = i;
             }
             for(int i = 0; i < wte::display_modes.size(); i++) {
@@ -115,7 +115,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::Spacing(); ImGui::Spacing();
         ImGui::Spacing(); ImGui::Spacing();
         if(ImGui::BeginListBox("Scale factor", ImVec2(95.0f, 90.0f))) {
-            for(int i = 0; i < IM_ARRAYSIZE(wte::scale_factors); i++) {
+            for(int i = 0; i < wte::scale_factors.size(); i++) {
                 const bool is_selected = (current_scale_item == i);
                 const float cur_scale = wte::scale_factors[i] * 100;
                 std::stringstream scale_stream;
@@ -170,7 +170,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             screen_w = config::gfx::screen_w;
             screen_h = config::gfx::screen_h;
             scale_factor = config::gfx::scale_factor;
-            for(int i = 0; i < IM_ARRAYSIZE(wte::scale_factors); i++) {
+            for(int i = 0; i < wte::scale_factors.size(); i++) {
                 if(config::gfx::scale_factor > i - .001 &&
                    config::gfx::scale_factor < i + .001) current_scale_item = i;
             }
@@ -191,7 +191,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 else return false;
             }());
             scale_factor = config::gfx::scale_factor;
-            for(int i = 0; i < IM_ARRAYSIZE(wte::scale_factors); i++) {
+            for(int i = 0; i < wte::scale_factors.size(); i++) {
                 if(config::gfx::scale_factor == i) current_scale_item = i;
             }
         }
