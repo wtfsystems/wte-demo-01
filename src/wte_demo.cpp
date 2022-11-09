@@ -96,7 +96,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         static int current_res_item = 0;
         static int current_scale_item = 0;
 
-        static int pass = 0;
+        static unsigned short pass = 0;
         if(pass == 0) {
             for(int i = 0; i < IM_ARRAYSIZE(wte::scale_factors); i++) {
                 if(config::gfx::scale_factor == i) current_scale_item = i;
