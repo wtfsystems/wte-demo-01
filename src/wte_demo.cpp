@@ -471,7 +471,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 [](const wte::entity_id& bkg_id) {
                     //  Define the animation process for the starfield.
                     wte::mgr::world::set_component<wte::cmp::gfx::background>(bkg_id)->set_drawing();
-                    al_clear_to_color(WTE_COLOR_BLACK);
+                    al_clear_to_color(al_map_rgb(0,0,0));
 
                     //  Move the stars.
                     for(std::size_t i = 0; i < MAX_STARS; i++) {
@@ -492,13 +492,13 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                         if(wte::mgr::world::get_component<stars>(bkg_id)->color[i] == 1 ||
                         wte::mgr::world::get_component<stars>(bkg_id)->color[i] == 4)
                             al_draw_pixel(wte::mgr::world::get_component<stars>(bkg_id)->x[i],
-                                        wte::mgr::world::get_component<stars>(bkg_id)->y[i], WTE_COLOR_WHITE);
+                                        wte::mgr::world::get_component<stars>(bkg_id)->y[i], al_map_rgb(255,255,255));
                         if(wte::mgr::world::get_component<stars>(bkg_id)->color[i] == 2)
                             al_draw_pixel(wte::mgr::world::get_component<stars>(bkg_id)->x[i],
-                                        wte::mgr::world::get_component<stars>(bkg_id)->y[i], WTE_COLOR_YELLOW);
+                                        wte::mgr::world::get_component<stars>(bkg_id)->y[i], al_map_rgb(255,255,0));
                         if(wte::mgr::world::get_component<stars>(bkg_id)->color[i] == 3)
                             al_draw_pixel(wte::mgr::world::get_component<stars>(bkg_id)->x[i],
-                                        wte::mgr::world::get_component<stars>(bkg_id)->y[i], WTE_COLOR_RED);
+                                        wte::mgr::world::get_component<stars>(bkg_id)->y[i], al_map_rgb(255,0,0));
                     }
                 });  //  End background rendering.
 
@@ -538,11 +538,11 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 [](const wte::entity_id& ovr_id) {
                     //  Define what gets displayed on the overlay.
                     wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->set_drawing();
-                    al_clear_to_color(WTE_COLOR_TRANSPARENT);
-                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("Score:  ", WTE_COLOR_WHITE, 110, 0, ALLEGRO_ALIGN_RIGHT);
-                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text(std::to_string(wte::mgr::variables::get<int>("score")), WTE_COLOR_WHITE, 110, 0, ALLEGRO_ALIGN_LEFT);
-                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("High Score:  ", WTE_COLOR_WHITE, 110, 10, ALLEGRO_ALIGN_RIGHT);
-                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text(std::to_string(wte::mgr::variables::get<int>("hiscore")), WTE_COLOR_WHITE, 110, 10, ALLEGRO_ALIGN_LEFT);
+                    al_clear_to_color(al_map_rgba(0,0,0,0));
+                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("Score:  ", al_map_rgb(255,255,255), 110, 0, ALLEGRO_ALIGN_RIGHT);
+                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text(std::to_string(wte::mgr::variables::get<int>("score")), al_map_rgb(255,255,255), 110, 0, ALLEGRO_ALIGN_LEFT);
+                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("High Score:  ", al_map_rgb(255,255,255), 110, 10, ALLEGRO_ALIGN_RIGHT);
+                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text(std::to_string(wte::mgr::variables::get<int>("hiscore")), al_map_rgb(255,255,255), 110, 10, ALLEGRO_ALIGN_LEFT);
                 }
             );  //  End score overlay drawing.
         }
@@ -562,10 +562,10 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                     //  Define what gets displayed on the overlay.
                     wte::entity_id shd_id = wte::mgr::world::get_id("shield");
                     wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->set_drawing();
-                    al_clear_to_color(WTE_COLOR_TRANSPARENT);
-                    al_draw_filled_rectangle((float)(120 - wte::mgr::world::get_component<energy>(shd_id)->amt), 0, 120, 10, WTE_COLOR_YELLOW);
-                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("Shield", WTE_COLOR_WHITE, 200, 0, ALLEGRO_ALIGN_RIGHT);
-                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("Lives:  " + std::to_string(wte::mgr::variables::get<int>("lives")), WTE_COLOR_WHITE, 200, 10, ALLEGRO_ALIGN_RIGHT);
+                    al_clear_to_color(al_map_rgba(0,0,0,0));
+                    al_draw_filled_rectangle((float)(120 - wte::mgr::world::get_component<energy>(shd_id)->amt), 0, 120, 10, al_map_rgb(255,255,0));
+                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("Shield", al_map_rgb(255,255,255), 200, 0, ALLEGRO_ALIGN_RIGHT);
+                    wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->draw_text("Lives:  " + std::to_string(wte::mgr::variables::get<int>("lives")), al_map_rgb(255,255,255), 200, 10, ALLEGRO_ALIGN_RIGHT);
                 }
             );  //  End info overlay drawing.
         }
