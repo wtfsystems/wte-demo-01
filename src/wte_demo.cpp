@@ -98,12 +98,12 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
 
         static int pass = 0;
         if(pass == 0) {
-            for(int i = 0; i < IM_ARRAYSIZE(wte::wtf_scale_factors); i++) {
+            for(int i = 0; i < IM_ARRAYSIZE(wte::scale_factors); i++) {
                 if(config::gfx::scale_factor == i) current_scale_item = i;
             }
-            for(int i = 0; i < wte::wtf_display_modes.size(); i++) {
-                if(wte::wtf_display_modes[i].width == screen_w &&
-                   wte::wtf_display_modes[i].height == screen_h) {
+            for(int i = 0; i < wte::display_modes.size(); i++) {
+                if(wte::display_modes[i].width == screen_w &&
+                   wte::display_modes[i].height == screen_h) {
                     current_res_item = i;
                 }
             }
@@ -115,16 +115,16 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         ImGui::Spacing(); ImGui::Spacing();
         ImGui::Spacing(); ImGui::Spacing();
         if(ImGui::BeginListBox("Scale factor", ImVec2(95.0f, 90.0f))) {
-            for(int i = 0; i < IM_ARRAYSIZE(wte::wtf_scale_factors); i++) {
+            for(int i = 0; i < IM_ARRAYSIZE(wte::scale_factors); i++) {
                 const bool is_selected = (current_scale_item == i);
-                const float cur_scale = wte::wtf_scale_factors[i] * 100;
+                const float cur_scale = wte::scale_factors[i] * 100;
                 std::stringstream scale_stream;
                 scale_stream << std::fixed << std::setprecision(0) << cur_scale;
                 const std::string temp_str = scale_stream.str() + "%";
                 if(ImGui::Selectable(temp_str.c_str(), is_selected))
                     current_scale_item = i;
                 if(is_selected) {
-                    scale_factor = wte::wtf_scale_factors[i];
+                    scale_factor = wte::scale_factors[i];
                     ImGui::SetItemDefaultFocus();
                 }
             }
@@ -132,13 +132,13 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         }
         ImGui::SameLine();
         if(ImGui::BeginListBox("Reolution", ImVec2(120.0f, 90.0f))) {
-            for(int i = 0; i < wte::wtf_display_modes.size(); i++) {
+            for(int i = 0; i < wte::display_modes.size(); i++) {
                 const bool is_selected = (current_res_item == i);
-                if(ImGui::Selectable(wte::wtf_display_modes[i].label.c_str(), is_selected))
+                if(ImGui::Selectable(wte::display_modes[i].label.c_str(), is_selected))
                     current_res_item = i;
                 if(is_selected) {
-                    screen_w = wte::wtf_display_modes[i].width;
-                    screen_h = wte::wtf_display_modes[i].height;
+                    screen_w = wte::display_modes[i].width;
+                    screen_h = wte::display_modes[i].height;
                     ImGui::SetItemDefaultFocus();
                 }
             }
@@ -170,13 +170,13 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             screen_w = config::gfx::screen_w;
             screen_h = config::gfx::screen_h;
             scale_factor = config::gfx::scale_factor;
-            for(int i = 0; i < IM_ARRAYSIZE(wte::wtf_scale_factors); i++) {
+            for(int i = 0; i < IM_ARRAYSIZE(wte::scale_factors); i++) {
                 if(config::gfx::scale_factor > i - .001 &&
                    config::gfx::scale_factor < i + .001) current_scale_item = i;
             }
-            for(int i = 0; i < wte::wtf_display_modes.size(); i++) {
-                if(wte::wtf_display_modes[i].width == screen_w &&
-                   wte::wtf_display_modes[i].height == screen_h) {
+            for(int i = 0; i < wte::display_modes.size(); i++) {
+                if(wte::display_modes[i].width == screen_w &&
+                   wte::display_modes[i].height == screen_h) {
                     current_res_item = i;
                 }
             }
@@ -191,7 +191,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 else return false;
             }());
             scale_factor = config::gfx::scale_factor;
-            for(int i = 0; i < IM_ARRAYSIZE(wte::wtf_scale_factors); i++) {
+            for(int i = 0; i < IM_ARRAYSIZE(wte::scale_factors); i++) {
                 if(config::gfx::scale_factor == i) current_scale_item = i;
             }
         }
