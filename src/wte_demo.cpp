@@ -343,7 +343,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             wte::mgr::world::set_component<wte::cmp::ai>(can_id)->enabled = true;
             wte::mgr::world::set_component<wte::cmp::hitbox>(can_id)->solid = true;
             //  Play sound effect.
-            wte::mgr::audio::sample::play(wte::mgr::assets<wte::al_sample>::get<wte::al_sample>("laser"), "cannon_fire");
+            wte::mgr::audio::sample::play(wte::mgr::assets::get<ALLEGRO_SAMPLE>("laser"), "cannon_fire");
         }
         if(key == config::controls::p1_key_action2) {
             wte::entity_id player_id = wte::mgr::world::get_id("player");
@@ -361,7 +361,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 wte::mgr::world::set_component<wte::cmp::hitbox>(shd_id)->solid = true;
                 wte::mgr::world::set_component<wte::cmp::hitbox>(player_id)->solid = false;
                 //  Play sound effect.
-                wte::mgr::audio::sample::play(wte::mgr::assets<wte::al_sample>::get<wte::al_sample>("shield"), "shield_sound");
+                wte::mgr::audio::sample::play(wte::mgr::assets::get<ALLEGRO_SAMPLE>("shield"), "shield_sound");
             }
         }
 
@@ -432,29 +432,24 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
     /* ********************************* */
     /* *** Asset loading *************** */
     /* ********************************* */
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>(
+    wte::mgr::assets::load<ALLEGRO_BITMAP>(
         "starfield",
-        wte::al_bitmap(config::gfx::viewport_w, config::gfx::viewport_h)
+        wte::make_asset<ALLEGRO_BITMAP>(config::gfx::viewport_w, config::gfx::viewport_h)
     );
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("score_overlay", wte::al_bitmap(200, 20));
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("player_info_overlay", wte::al_bitmap(200, 20));
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("game_over_overlay", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("game_over_overlay")->load("game_over.png");
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("ship", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("ship")->load("ship.png");
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("cannon", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("cannon")->load("cannon.png");
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("shield", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("shield")->load("shield.png");
-    wte::mgr::assets<wte::al_bitmap>::load<wte::al_bitmap>("asteroid", wte::al_bitmap());
-    wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("asteroid")->load("asteroid.png");
+    wte::mgr::assets::load<ALLEGRO_BITMAP>("score_overlay", wte::make_asset<ALLEGRO_BITMAP>(200, 20));
+    wte::mgr::assets::load<ALLEGRO_BITMAP>("player_info_overlay", wte::make_asset<ALLEGRO_BITMAP>(200, 20));
+    wte::mgr::assets::load<ALLEGRO_BITMAP>("game_over_overlay", wte::make_asset<ALLEGRO_BITMAP>("game_over.png"));
+    wte::mgr::assets::load<ALLEGRO_BITMAP>("ship", wte::make_asset<ALLEGRO_BITMAP>("ship.png"));
+    wte::mgr::assets::load<ALLEGRO_BITMAP>("cannon", wte::make_asset<ALLEGRO_BITMAP>("cannon.png"));
+    wte::mgr::assets::load<ALLEGRO_BITMAP>("shield", wte::make_asset<ALLEGRO_BITMAP>("shield.png"));
+    wte::mgr::assets::load<ALLEGRO_BITMAP>("asteroid", wte::make_asset<ALLEGRO_BITMAP>("asteroid.png"));
 
     //  Load music for the demo into the asset manager.
-    wte::mgr::assets<wte::al_audio>::load<wte::al_audio>("music", wte::al_audio("music.ogg"));
+    wte::mgr::assets::load<ALLEGRO_AUDIO_STREAM>("music", wte::make_asset<ALLEGRO_AUDIO_STREAM>("music.ogg"));
     //  Load some samples in the asset manager.
-    wte::mgr::assets<wte::al_sample>::load<wte::al_sample>("laser", wte::al_sample("sfx/laser.wav"));
-    wte::mgr::assets<wte::al_sample>::load<wte::al_sample>("shield", wte::al_sample("sfx/shield.wav"));
-    wte::mgr::assets<wte::al_sample>::load<wte::al_sample>("megumin", wte::al_sample("sfx/megumin.wav"));
+    wte::mgr::assets::load<ALLEGRO_SAMPLE>("laser", wte::make_asset<ALLEGRO_SAMPLE>("sfx/laser.wav"));
+    wte::mgr::assets::load<ALLEGRO_SAMPLE>("shield", wte::make_asset<ALLEGRO_SAMPLE>("sfx/shield.wav"));
+    wte::mgr::assets::load<ALLEGRO_SAMPLE>("megumin", wte::make_asset<ALLEGRO_SAMPLE>("sfx/megumin.wav"));
 
     /* **************************************************** */
     /* *** ENTITY CREATION ******************************** */
@@ -467,7 +462,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             wte::mgr::world::set_name(e_id, "starfield");
             wte::mgr::world::add_component<stars>(e_id);
             wte::mgr::world::add_component<wte::cmp::gfx::background>(e_id,
-                wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("starfield"), layer::background, 0, 0,
+                wte::mgr::assets::get<ALLEGRO_BITMAP>("starfield"), layer::background, 0, 0,
                 [](const wte::entity_id& bkg_id) {
                     //  Define the animation process for the starfield.
                     wte::mgr::world::set_component<wte::cmp::gfx::background>(bkg_id)->set_drawing();
@@ -532,8 +527,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         [](const wte::entity_id& e_id, const wte::msg_args& args) {
             wte::mgr::world::set_name(e_id, "score_overlay");
             wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
-                wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("score_overlay"),
-                wte::mgr::assets<wte::al_font>::get<wte::al_font>("wte_default_font"),
+                wte::mgr::assets::get<ALLEGRO_BITMAP>("score_overlay"),
+                wte::mgr::assets::get<ALLEGRO_FONT>("wte_default_font"),
                 layer::overlay, config::gfx::viewport_h - 20, 0,
                 [](const wte::entity_id& ovr_id) {
                     //  Define what gets displayed on the overlay.
@@ -555,8 +550,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         [](const wte::entity_id& e_id, const wte::msg_args& args) {
             wte::mgr::world::set_name(e_id, "player_info_overlay");
             wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
-                wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("player_info_overlay"),
-                wte::mgr::assets<wte::al_font>::get<wte::al_font>("wte_default_font"), layer::overlay,
+                wte::mgr::assets::get<ALLEGRO_BITMAP>("player_info_overlay"),
+                wte::mgr::assets::get<ALLEGRO_FONT>("wte_default_font"), layer::overlay,
                 config::gfx::viewport_w - 200, config::gfx::viewport_h - 20,
                 [](const wte::entity_id& ovr_id) {
                     //  Define what gets displayed on the overlay.
@@ -578,8 +573,8 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
         [](const wte::entity_id& e_id, const wte::msg_args& args) {
             wte::mgr::world::set_name(e_id, "game_over_overlay");
             wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
-                wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("game_over_overlay"),
-                wte::mgr::assets<wte::al_font>::get<wte::al_font>("wte_default_font"),
+                wte::mgr::assets::get<ALLEGRO_BITMAP>("game_over_overlay"),
+                wte::mgr::assets::get<ALLEGRO_FONT>("wte_default_font"),
                 layer::overlay, (config::gfx::viewport_w / 2) - 240, (config::gfx::viewport_h / 2) - 66,
                 [](const wte::entity_id& ovr_id) {}
             );
@@ -602,7 +597,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                 (float)(config::gfx::viewport_h - 32));
             wte::mgr::world::add_component<health>(e_id, 1, 1);
             wte::mgr::world::add_component<wte::cmp::motion>(e_id, 0.0f, 0.0f, 0.0f);
-            wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("ship"),
+            wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets::get<ALLEGRO_BITMAP>("ship"),
                                                 layer::player, 32.0f, 32.0f, -11.0f, 0.0f, 1);
             wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("main", 0, 3);
             wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("death", 4, 7);
@@ -642,7 +637,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
 
                         wte::mgr::world::set_component<wte::cmp::hitbox>(plr_id)->solid = false;
 
-                        wte::mgr::audio::sample::play(wte::mgr::assets<wte::al_sample>::get<wte::al_sample>("megumin"), "once");
+                        wte::mgr::audio::sample::play(wte::mgr::assets::get<ALLEGRO_SAMPLE>("megumin"), "once");
                         wte::mgr::variables::set<int>("lives", wte::mgr::variables::get<int>("lives") - 1);
                         wte::mgr::world::set_component<wte::cmp::motion>(plr_id)->x_vel = 0.0f;
                         wte::mgr::world::set_component<wte::cmp::motion>(plr_id)->y_vel = 0.0f;
@@ -693,7 +688,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             wte::mgr::world::add_component<wte::cmp::hitbox>(e_id, 10, 200, 0, false);
             wte::mgr::world::set_component<wte::cmp::hitbox>(e_id)->solid = false;
             wte::mgr::world::add_component<damage>(e_id, 3);
-            wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("cannon"),
+            wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets::get<ALLEGRO_BITMAP>("cannon"),
                                                 layer::player, 10.0f, 200.0f, 0.0f, 0.0f, 2);
             wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("main", 0, 3);
             wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->set_cycle("main");
@@ -737,7 +732,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             wte::mgr::world::set_component<wte::cmp::hitbox>(e_id)->solid = false;
             wte::mgr::world::add_component<energy>(e_id, 50, 100);
             wte::mgr::world::add_component<damage>(e_id, 100);
-            wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("shield"),
+            wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets::get<ALLEGRO_BITMAP>("shield"),
                                                 layer::player, 64.0f, 64.0f, 0.0f, 0.0f, 6);
             wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("main", 0, 5);
             wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->set_cycle("main");
@@ -815,7 +810,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             wte::mgr::world::set_component<wte::cmp::motion>(e_id)->x_vel = std::stof(args[4]);
             wte::mgr::world::set_component<wte::cmp::motion>(e_id)->y_vel = std::stof(args[4]);
 
-            wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets<wte::al_bitmap>::get<wte::al_bitmap>("asteroid"),
+            wte::mgr::world::add_component<wte::cmp::gfx::sprite>(e_id, wte::mgr::assets::get<ALLEGRO_BITMAP>("asteroid"),
                 layer::enemy, 16.0f, 16.0f, 0.0f, 0.0f, (int)(30 / std::stof(args[4])));
             wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->add_cycle("main", 0, 5);
             wte::mgr::world::set_component<wte::cmp::gfx::sprite>(e_id)->set_cycle("main");
@@ -836,7 +831,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
                     //  Health check.  If asteroid's HP is <= 0, reward player with points and delete the entity.
                     if(wte::mgr::world::get_component<health>(ast_id)->hp <= 0) {
                         wte::mgr::messages::add(wte::message("spawner", "delete", wte::mgr::world::get_name(ast_id)));
-                        wte::mgr::audio::sample::play(wte::mgr::assets<wte::al_sample>::get<wte::al_sample>("megumin"), "once", 1.0f, ALLEGRO_AUDIO_PAN_NONE, 1.8f);
+                        wte::mgr::audio::sample::play(wte::mgr::assets::get<ALLEGRO_SAMPLE>("megumin"), "once", 1.0f, ALLEGRO_AUDIO_PAN_NONE, 1.8f);
 
                         wte::mgr::variables::set("score",
                             (wte::mgr::variables::get<int>("score") +
@@ -932,7 +927,7 @@ void wte_demo::new_game(void) {
         wte::mgr::variables::set("max_lives", 3);
     wte::mgr::variables::set("lives", wte::mgr::variables::get<int>("max_lives"));
 
-    wte::mgr::audio::music::a::play(wte::mgr::assets<wte::al_audio>::get<wte::al_audio>("music"));
+    wte::mgr::audio::music::a::play(wte::mgr::assets::get<ALLEGRO_AUDIO_STREAM>("music"));
 }
 
 /*
