@@ -18,12 +18,12 @@ int main(int argc, char **argv) {
     wte::engine::add_file_location("data.zip");
 
     //  Set key bindings
-    wte::config::controls::p1_key_up = WTE_KEY_W;
-    wte::config::controls::p1_key_down = WTE_KEY_S;
-    wte::config::controls::p1_key_left = WTE_KEY_A;
-    wte::config::controls::p1_key_right = WTE_KEY_D;
-    wte::config::controls::p1_key_action1 = WTE_KEY_RCTRL;
-    wte::config::controls::p1_key_action2 = WTE_KEY_ALTGR;
+    wte::config::controls::p1_key_up = ALLEGRO_KEY_W;
+    wte::config::controls::p1_key_down = ALLEGRO_KEY_S;
+    wte::config::controls::p1_key_left = ALLEGRO_KEY_A;
+    wte::config::controls::p1_key_right = ALLEGRO_KEY_D;
+    wte::config::controls::p1_key_action1 = ALLEGRO_KEY_RCTRL;
+    wte::config::controls::p1_key_action2 = ALLEGRO_KEY_ALTGR;
 
     //  Load settings.
     wte::config::load();
