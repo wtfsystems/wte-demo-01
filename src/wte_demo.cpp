@@ -127,7 +127,7 @@ wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
             ImGui::EndListBox();
         }
         ImGui::SameLine();
-        if(ImGui::BeginListBox("Reolution", ImVec2(120.0f, 90.0f))) {
+        if(ImGui::BeginListBox("Resolution", ImVec2(120.0f, 90.0f))) {
             for(std::size_t i = 0; i < wte::display_modes.size(); i++) {
                 const bool is_selected = (current_res_item == i);
                 if(ImGui::Selectable(wte::display_modes[i].label.c_str(), is_selected))
