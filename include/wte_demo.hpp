@@ -16,9 +16,6 @@
 #include <numeric>
 #include <functional>
 
-#include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_acodec.h>
-
 #include <wtengine/wtengine.hpp>
 
 #include <my_components.hpp>

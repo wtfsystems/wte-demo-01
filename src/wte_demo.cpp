@@ -18,10 +18,6 @@
  * Initialize game specific variables here.
  */
 wte_demo::wte_demo(int argc, char **argv) : engine(argc, argv) {
-    //  Init Allegro addons that the engine does not use.
-    al_init_primitives_addon();
-    al_init_acodec_addon();
-
     /* ********************************* */
     /* *** Dear ImGui Config *********** */
     /* ********************************* */
@@ -889,8 +885,6 @@ wte_demo::~wte_demo() {
     wte::mgr::variables::clear_save();
     wte::mgr::variables::save<int>("max_lives");
     wte::mgr::variables::save<int>("hiscore");
-    
-    al_shutdown_primitives_addon();
 }
 
 /*
