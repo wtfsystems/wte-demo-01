@@ -64,8 +64,7 @@ find_package(GLUT REQUIRED)
 #
 ########################################
 add_executable(wte_demo
-    src/main.cpp
-    src/wte_demo.cpp)
+    src/main.cpp)
 
 target_compile_options(wte_demo PRIVATE)
 

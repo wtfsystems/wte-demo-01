@@ -8,7 +8,6 @@
 
 #include <wtengine/wtengine.hpp>
 
-#include <wte_demo.hpp>
 #include <my_components.hpp>
 
 namespace layer {
@@ -442,7 +441,7 @@ int main(int argc, char **argv) {
     /* ********************************* */
     /* *** Initialize game object ****** */
     /* ********************************* */
-    wte_demo my_game(argc, argv);
+    wte::engine::initialize(argc, argv);
 
     /* ********************************* */
     /* *** Game variables ************** */
@@ -908,8 +907,56 @@ int main(int argc, char **argv) {
     /* *** END ENTITY CREATION **************************** */
     /* **************************************************** */
 
+    wte::engine::load_systems = [](){
+        wte::mgr::systems::add<wte::sys::movement>();
+        wte::mgr::systems::add<wte::sys::colision>();
+        wte::mgr::systems::add<wte::sys::logic>();
+        wte::mgr::systems::add<wte::sys::gfx::animate>();
+    };
+
+    wte::engine::new_game = [](){
+        //  Spawn starting entities
+        wte::mgr::spawner::spawn("starfield", {});
+        wte::mgr::spawner::spawn("score_overlay", {});
+        wte::mgr::spawner::spawn("player_info_overlay", {});
+        wte::mgr::spawner::spawn("game_over_overlay", {});
+        wte::mgr::spawner::spawn("player", {});
+        wte::mgr::spawner::spawn("main_cannon", {});
+        wte::mgr::spawner::spawn("shield", {});
+
+        menu_counter = 0;
+
+        //  Reset score.
+        wte::mgr::variables::set("score", 0);
+
+        //  Set number of lives.
+        if(wte::mgr::variables::get<int>("max_lives") > 5 || wte::mgr::variables::get<int>("max_lives") < 3)
+            wte::mgr::variables::set("max_lives", 3);
+        wte::mgr::variables::set("lives", wte::mgr::variables::get<int>("max_lives"));
+
+        wte::mgr::audio::music::a::play(wte::mgr::assets::get<ALLEGRO_AUDIO_STREAM>("music"));
+    };
+
+    wte::engine::end_game = [](){
+        if(wte::mgr::variables::get<int>("score") > wte::mgr::variables::get<int>("hiscore"))
+            wte::mgr::variables::set("hiscore", wte::mgr::variables::get<int>("score"));
+        menu_counter = 0;
+    };
+
+    wte::engine::on_engine_pause = [](){
+        wte::mgr::audio::music::a::pause();
+        wte::mgr::audio::ambiance::pause();
+        menu_counter = 0;
+    };
+
+    wte::engine::on_engine_unpause = [](){
+        wte::mgr::audio::music::a::unpause();
+        wte::mgr::audio::ambiance::unpause();
+        menu_counter = 0;
+    };
+
     //  Run the game loop.
-    my_game.do_game();
+    wte::engine::do_game();
 
     wte::mgr::variables::clear_save();
     wte::mgr::variables::save<int>("max_lives");
@@ -917,6 +964,8 @@ int main(int argc, char **argv) {
 
     //  Save settings.
     wte::config::save();
+
+    wte::engine::de_init();
 
     return 0; //  Exit program.
 }
