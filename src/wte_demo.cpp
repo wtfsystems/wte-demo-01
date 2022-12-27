@@ -13,6 +13,8 @@
 
 #include <iostream>
 
+static std::size_t menu_counter;
+
 /*
  * Game's constructor.
  * Initialize game specific variables here.
@@ -49,7 +51,7 @@ void wte_demo::new_game(void) {
     wte::mgr::spawner::spawn("main_cannon", {});
     wte::mgr::spawner::spawn("shield", {});
 
-    //menu_counter = 0;
+    menu_counter = 0;
 
     //  Reset score.
     wte::mgr::variables::set("score", 0);
@@ -68,7 +70,7 @@ void wte_demo::new_game(void) {
 void wte_demo::end_game(void) {
     if(wte::mgr::variables::get<int>("score") > wte::mgr::variables::get<int>("hiscore"))
         wte::mgr::variables::set("hiscore", wte::mgr::variables::get<int>("score"));
-    //menu_counter = 0;
+    menu_counter = 0;
 }
 
 /*
@@ -77,7 +79,7 @@ void wte_demo::end_game(void) {
 void wte_demo::on_engine_pause(void) {
     wte::mgr::audio::music::a::pause();
     wte::mgr::audio::ambiance::pause();
-    //menu_counter = 0;
+    menu_counter = 0;
 }
 
 /*
@@ -86,5 +88,5 @@ void wte_demo::on_engine_pause(void) {
 void wte_demo::on_engine_unpause(void) {
     wte::mgr::audio::music::a::unpause();
     wte::mgr::audio::ambiance::unpause();
-    //menu_counter = 0;
+    menu_counter = 0;
 }
