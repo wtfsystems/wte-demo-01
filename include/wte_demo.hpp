@@ -20,19 +20,6 @@
 
 #include <my_components.hpp>
 
-namespace layer {
-    inline const std::size_t background = 0;
-    inline const std::size_t enemy = 1;
-    inline const std::size_t player = 2;
-    inline const std::size_t overlay = 0;
-}
-
-namespace player_pols {
-    inline static float x = 0.0f;
-    inline static float y = 0.0f;
-    inline static void reset(void) { x = y = 0.0f; };
-}
-
 class wte_demo final : public wte::engine {
     public:
         wte_demo(int argc, char **argv);
@@ -49,10 +36,6 @@ class wte_demo final : public wte::engine {
         void on_engine_pause(void) override;
         //  On menu close
         void on_engine_unpause(void) override;
-
-        std::size_t menu_counter;
-        std::function<void(void)> draw_audio_opts;
-        std::function<void(void)> draw_game_opts;
 };
 
 #endif

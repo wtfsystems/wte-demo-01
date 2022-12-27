@@ -10,6 +10,19 @@
 
 #include <wte_demo.hpp>
 
+namespace layer {
+    const std::size_t background = 0;
+    const std::size_t enemy = 1;
+    const std::size_t player = 2;
+    const std::size_t overlay = 0;
+}
+
+namespace player_pols {
+    static float x = 0.0f;
+    static float y = 0.0f;
+    static void reset(void) { x = y = 0.0f; };
+}
+
 int main(int argc, char **argv) {
     //  Set locations to load game data from.
     wte::engine::add_file_location("data.zip");
