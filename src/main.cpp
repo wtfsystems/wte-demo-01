@@ -9,6 +9,7 @@
 #include <wtengine/wtengine.hpp>
 
 #include <wte_demo.hpp>
+#include <my_components.hpp>
 
 namespace layer {
     static const std::size_t background = 0;
@@ -24,7 +25,6 @@ namespace player_pols {
 }
 
 //  Menu counter to track which menu we're on.
-//  This is stored in the game object.
 static std::size_t menu_counter = 0;  // 0 = main menu; 1 = audio; 2 = game
 
 int main(int argc, char **argv) {
