@@ -4,9 +4,6 @@
  * File:  main.cpp
  *
  * See LICENSE.md for copyright information
- *
- * Main file for WTEngine demo
- * Initializes engine and starts the game loop.
  */
 
 #include <wtengine/wtengine.hpp>
