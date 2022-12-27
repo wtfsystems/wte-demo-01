@@ -25,6 +25,15 @@ int main(int argc, char **argv) {
     wte::config::controls::p1_key_action1 = ALLEGRO_KEY_RCTRL;
     wte::config::controls::p1_key_action2 = ALLEGRO_KEY_ALTGR;
 
+    //  Load settings.
+    wte::config::load();
+
+    //  Set the title screen.
+    wte::mgr::gfx::renderer::set_title_screen("title.bmp");
+
+    //  Set the size of the play area.
+    wte::mgr::gfx::renderer::set_viewport_size(768, 1024);
+
     /* ********************************* */
     /* *** Input handling ************** */
     /* ********************************* */
@@ -165,15 +174,6 @@ int main(int argc, char **argv) {
             wte::mgr::audio::sample::stop("shield_sound");
         }
     });
-
-    //  Load settings.
-    wte::config::load();
-
-    //  Set the title screen.
-    wte::mgr::gfx::renderer::set_title_screen("title.bmp");
-
-    //  Set the size of the play area.
-    wte::mgr::gfx::renderer::set_viewport_size(768, 1024);
 
     //  Initialize game object.
     wte_demo my_game(argc, argv);
