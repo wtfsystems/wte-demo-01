@@ -11,10 +11,10 @@
 #include <wte_demo.hpp>
 
 namespace layer {
-    const std::size_t background = 0;
-    const std::size_t enemy = 1;
-    const std::size_t player = 2;
-    const std::size_t overlay = 0;
+    static const std::size_t background = 0;
+    static const std::size_t enemy = 1;
+    static const std::size_t player = 2;
+    static const std::size_t overlay = 0;
 }
 
 namespace player_pols {
