@@ -23,6 +23,10 @@ namespace player_pols {
     static void reset(void) { x = y = 0.0f; };
 }
 
+//  Menu counter to track which menu we're on.
+//  This is stored in the game object.
+static std::size_t menu_counter = 0;  // 0 = main menu; 1 = audio; 2 = game
+
 int main(int argc, char **argv) {
     //  Set locations to load game data from.
     wte::engine::add_file_location("data.zip");
@@ -47,10 +51,6 @@ int main(int argc, char **argv) {
     /* ********************************* */
     /* *** Dear ImGui Config *********** */
     /* ********************************* */
-    //  Menu counter to track which menu we're on.
-    //  This is stored in the game object.
-    static std::size_t menu_counter = 0;  // 0 = main menu; 1 = audio; 2 = game
-
     //  The next two functions are created in the game object.
     //  This is just to make them reusable.
 
