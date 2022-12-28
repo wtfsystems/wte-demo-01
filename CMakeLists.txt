@@ -84,8 +84,7 @@ endif()
 #
 ########################################
 #  Set include folder for building
-target_include_directories(wte_demo PRIVATE include
-    ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS})
+target_include_directories(wte_demo PRIVATE include ${OPENGL_INCLUDE_DIRS})
 
 #  Link libraries
 target_link_libraries(wte_demo PUBLIC
@@ -99,7 +98,7 @@ target_link_libraries(wte_demo PUBLIC
     PkgConfig::ALLEGRO_FONT
     PkgConfig::ALLEGRO_IMAGE
     PkgConfig::ALLEGRO_PRIMV
-    ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
+    ${OPENGL_LIBRARIES})
 
 #  Set the build target
 set_target_properties(wte_demo PROPERTIES LINK_SEARCH_START_STATIC 1)
