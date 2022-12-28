@@ -56,7 +56,6 @@ find_package(PkgConfig REQUIRED)
 
 #  Check for OpenGL
 find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)
 
 ########################################
 #
