@@ -956,7 +956,7 @@ int main(int argc, char **argv) {
     };
 
     //  Run the game loop.
-    wte::engine::do_game();
+    wte::do_game();
 
     wte::mgr::variables::clear_save();
     wte::mgr::variables::save<int>("max_lives");
