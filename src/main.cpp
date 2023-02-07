@@ -8,7 +8,11 @@
 
 #include <wtengine/wtengine.hpp>
 
-#include <my_components.hpp>
+#include <damage.hpp>
+#include <energy.hpp>
+#include <health.hpp>
+#include <size.hpp>
+#include <stars.hpp>
 
 namespace layer {
     static const std::size_t background = 0;
@@ -556,7 +560,7 @@ int main(int argc, char **argv) {
             wte::mgr::world::add_component<wte::cmp::gfx::overlay>(e_id,
                 wte::mgr::assets::get<ALLEGRO_BITMAP>("score_overlay"),
                 wte::mgr::assets::get<ALLEGRO_FONT>("wte_default_font"),
-                layer::overlay, wte::config::gfx::viewport_h - 20, 0,
+                layer::overlay, 0, wte::config::gfx::viewport_h - 20,
                 [](const wte::entity_id& ovr_id) {
                     //  Define what gets displayed on the overlay.
                     wte::mgr::world::set_component<wte::cmp::gfx::overlay>(ovr_id)->set_drawing();
