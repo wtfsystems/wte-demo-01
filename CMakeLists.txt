@@ -46,8 +46,6 @@ find_package(PkgConfig REQUIRED)
     pkg_check_modules(ALLEGRO_PRIMV REQUIRED IMPORTED_TARGET allegro_primitives-5)
     #  Check for physfs
     pkg_check_modules(PHYSFS REQUIRED IMPORTED_TARGET physfs)
-    #  Check for IMGUI
-    pkg_check_modules(IMGUI REQUIRED IMPORTED_TARGET imgui)
     #  Check for WTEngine
     pkg_check_modules(WTENGINE REQUIRED IMPORTED_TARGET wtengine)
 #  Check for OpenGL
