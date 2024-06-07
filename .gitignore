@@ -1,12 +1,2 @@
-.npmignore
-node_modules/
-package-lock.json
-
-*.code-workspace
 .vscode/
-
-.comment_updater_config.json
-.localbak_config.json
-*_backup/
-
 build/
